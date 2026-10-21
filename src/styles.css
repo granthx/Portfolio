@@ -1,0 +1,3855 @@
+
+        /* Accessibility: Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+            .will-change-transform, .will-change-opacity {
+                will-change: auto !important;
+            }
+        }
+
+        :root {
+            --beige: #F4EFE6;
+            --beige-dark: #E5DFC8;
+            --blue: #012CEB;
+            --navy: #051024;
+            --red: #FF2E3B;
+            --red-hot: #D61B27;
+            --red-soft: #FF6B75;
+            --red-glow: rgba(255, 46, 59, 0.45);
+            --red-ink: #FFFFFF;
+            /* Backward compatibility aliases */
+            --pink: var(--red);
+            --pink-hot: var(--red-hot);
+            --pink-soft: var(--red-soft);
+            --pink-glow: var(--red-glow);
+            --pink-ink: var(--red-ink);
+            --border-w: 2px;
+            --font-main: 'Inter', Arial, sans-serif;
+        }
+
+        /* Manga Inked Scrollbar */
+        .custom-manga-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-manga-scrollbar::-webkit-scrollbar-track {
+            background: #F4EFE6;
+            border-left: 1px solid rgba(10, 10, 10, 0.2);
+        }
+        .custom-manga-scrollbar::-webkit-scrollbar-thumb {
+            background: #0A0A0A;
+        }
+        .custom-manga-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #012CEB;
+        }
+        .custom-manga-scrollbar {
+            scrollbar-width: thin;
+            scrollbar-color: #0A0A0A #F4EFE6;
+        }
+
+        ::selection {
+            background-color: var(--blue);
+            color: var(--beige);
+        }
+
+        ::-moz-selection {
+            background-color: var(--blue);
+            color: var(--beige);
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--red) !important;
+            outline-offset: 2px !important;
+        }
+
+        html {
+            overflow-x: hidden; /* block horizontal bleed even without Lenis */
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: #01040a; /* Deep void base */
+            color: var(--navy);
+            margin: 0;
+            overflow-x: hidden; /* horizontal bleed blocked; Lenis controls vertical */
+            -webkit-font-smoothing: antialiased;
+            font-weight: 600;
+        }
+
+        /* Locks background scrolling while the loading animation is active */
+        body.is-loading {
+            overflow: hidden !important;
+            height: 100vh !important;
+            touch-action: none;
+        }
+
+        /* ========================================================================= */
+        /* FABRIC LOADER OVERLAY STYLES                                              */
+        /* ========================================================================= */
+        #fabricLoaderOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background-color: #000000;
+            pointer-events: auto;
+            user-select: none;
+            -webkit-user-select: none;
+            overflow: hidden;
+            will-change: opacity;
+        }
+
+        #fabricStaticImg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center bottom;
+            pointer-events: none;
+            display: block;
+        }
+
+        #fabricLoaderCanvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            pointer-events: none;
+        }
+
+        #fabricLoaderCanvas.is-hidden {
+            display: none;
+        }
+
+        /* Cinematic Bold Loading Indicator */
+        #fabricLoaderText {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100005;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(28px, 5.5vw, 56px);
+            font-weight: 700;
+            letter-spacing: clamp(0.18em, 0.4vw, 0.32em);
+            text-transform: uppercase;
+            color: #FFFFFF;
+            text-shadow: 0 0 25px rgba(255, 255, 255, 0.6), 0 0 50px rgba(255, 255, 255, 0.25), 0 4px 18px rgba(0, 0, 0, 0.95);
+            pointer-events: none;
+            user-select: none;
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        #fabricLoaderText .loader-char {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(12px) scale(0.92);
+            filter: blur(8px);
+            will-change: transform, opacity, filter;
+        }
+
+        #fabricLoaderText .loader-dot {
+            margin-left: 2px;
+            color: var(--red-soft);
+            text-shadow: 0 0 16px var(--red);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            #fabricLoaderOverlay {
+                transition: opacity 0.6s ease;
+            }
+        }
+
+        /* --- UI UTILS --- */
+        .border-grid { border-color: var(--blue); border-width: var(--border-w); }
+        .border-b-grid { border-bottom: var(--border-w) solid var(--blue); }
+        
+        @media (hover: hover) and (pointer: fine) {
+            body, a, button, [role="button"], input, select, textarea, .cursor-pointer, .cursor-hover {
+                cursor: none !important;
+            }
+        }
+
+        /* The Core Navbar Element */
+        .nav-brutal { 
+            display: flex; position: relative; background: var(--beige); 
+            border: 2px solid var(--navy); box-shadow: 4px 4px 0px var(--navy); 
+            padding: 4px; pointer-events: auto; justify-content: center;
+            overflow: hidden;
+            will-change: width, transform, border-color, background-color;
+        }
+        @media (min-width: 768px) {
+            .nav-brutal { border-width: 3px; box-shadow: 8px 8px 0px var(--navy); padding: 6px; }
+        }
+        
+        .nav-indicator { 
+            position: absolute; top: 4px; bottom: 4px; left: 4px; 
+            background: var(--blue); z-index: 0; 
+            box-shadow: 0 0 10px var(--red-glow);
+            will-change: transform, width, left;
+        }
+        .nav-indicator::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 12%;
+            right: 12%;
+            height: 2px;
+            background: var(--red);
+            border-radius: 1px;
+            box-shadow: 0 0 6px var(--red);
+        }
+        @media (min-width: 768px) {
+            .nav-indicator { top: 6px; bottom: 6px; left: 6px; }
+            .nav-indicator::after { height: 2.5px; }
+        }
+        
+        .nav-item {
+            position: relative; z-index: 1; font-weight: 800;
+            letter-spacing: 0.1em; color: var(--navy);
+            transition: color 0.2s ease, text-shadow 0.2s ease; text-decoration: none; white-space: nowrap;
+            flex-shrink: 0;
+            text-shadow: 0 0 0.5px currentColor, 0 0 0.5px currentColor;
+        }
+        .nav-item:hover:not(.active) {
+            color: var(--red-hot);
+        }
+        .nav-item.active { color: var(--beige); }
+
+        .bg-blueprint {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(1, 44, 235, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(1, 44, 235, 0.05) 1px, transparent 1px);
+        }
+
+        h2, h3 { font-weight: 800; letter-spacing: -0.03em; }
+        ::-webkit-scrollbar { display: none; }
+        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        @keyframes float { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-7px); } }
+
+        /* --- CINEMATIC WORLD ARCHITECTURE --- */
+        #world-viewport {
+            width: 100%;
+            height: 100vh;
+            position: fixed;
+            top: 0; left: 0;
+            overflow-y: auto; 
+            overflow-x: hidden;
+            z-index: 10;
+            background: #01040a;
+            perspective: 1500px;
+        }
+
+        #world-container {
+            will-change: transform, filter, opacity;
+            background: var(--beige);
+            min-height: 100vh;
+            transform-origin: center bottom;
+            transform-style: preserve-3d;
+        }
+
+        /* Cinematic HUD Vignette */
+        #cinematic-vignette {
+            position: fixed; inset: 0; z-index: 9000; pointer-events: none;
+            background: radial-gradient(circle at center, transparent 20%, rgba(1,4,12,0.98) 100%);
+            opacity: 0.1; transition: opacity 0.8s ease; mix-blend-mode: multiply;
+        }
+        body.traveling #cinematic-vignette { opacity: 1; }
+        
+        /* Prevent heavy GSAP frame rendering during fast cinematic warping */
+        body.traveling #vending-machine-section {
+            visibility: hidden !important;
+        }
+
+        /* Cinematic Text Reveals */
+        .reveal-text {
+            clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0% 100%);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: clip-path 0.9s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), 
+                        opacity 0.9s ease;
+            will-change: clip-path, transform, opacity;
+        }
+        .reveal-text.is-visible {
+            clip-path: polygon(0 -20%, 100% -20%, 100% 120%, 0 120%);
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .reveal-blur {
+            filter: blur(8px);
+            transform: scale(0.95) translateY(10px);
+            opacity: 0;
+            transition: filter 1s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 1s cubic-bezier(0.16, 1, 0.3, 1), 
+                        opacity 1s ease;
+            will-change: filter, transform, opacity;
+        }
+        .reveal-blur.is-visible {
+            filter: blur(0px);
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        /* Metro Vibration Effect */
+        @keyframes rumble {
+            0% { transform: translateY(0px) translateX(0px); }
+            25% { transform: translateY(-1px) translateX(1px) rotate(0.1deg); }
+            50% { transform: translateY(1px) translateX(-1px) rotate(-0.1deg); }
+            75% { transform: translateY(-1px) translateX(-0.5px) rotate(0.05deg); }
+            100% { transform: translateY(0px) translateX(0px); }
+        }
+        .animate-rumble {
+            animation: rumble 0.15s ease-in-out infinite;
+        }
+
+        /* --- DECK & REELS SPREAD ON SCROLL --- */
+        @media (min-width: 768px) {
+            .spread-deck > * + * {
+                margin-left: -10rem !important;
+                transition: margin 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s !important;
+            }
+            .spread-deck.is-spread > * + * {
+                margin-left: -1.5rem !important; /* Spread sideways */
+            }
+
+            .spread-reels > * + * {
+                margin-left: -8rem !important;
+                transition: margin 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.4s !important;
+            }
+            .spread-reels.is-spread > * + * {
+                margin-left: -0.5rem !important; /* Spread sideways */
+            }
+        }
+
+        /* Elegant Highlighting */
+        .glow-highlight {
+            position: relative;
+            display: inline-block;
+            color: #8DE254;
+            text-shadow: 0 0 15px rgba(141,226,84,0.4);
+            font-style: italic;
+        }
+        .glow-highlight::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(141,226,84,0.8), transparent);
+        }
+
+        /* Video spatial layer — always fullscreen, always playing */
+        #intro-thumb-container {
+            opacity: 1;
+        }
+
+        /* The intro window frame that replaces the video slot in typography */
+        #intro-window-frame {
+            backdrop-filter: blur(1px);
+            /* Subtle gradient to suggest depth behind */
+            background: linear-gradient(
+                to bottom,
+                rgba(1, 44, 235, 0.08) 0%,
+                rgba(1, 44, 235, 0.02) 100%
+            );
+        }
+
+        #main-nav-container,
+        #top-ribbon {
+            will-change: transform, opacity, filter;
+        }
+
+        /* Modern Glass Reflections */
+        .glass-reflection {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.03) 45%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 55%, transparent 100%);
+            animation: drift 15s infinite linear;
+            pointer-events: none; z-index: 50; mix-blend-mode: overlay;
+        }
+        @keyframes drift {
+            0% { transform: translateX(-150%) skewX(-15deg); }
+            100% { transform: translateX(250%) skewX(-15deg); }
+        }
+
+        /* Card Highlights */
+        @keyframes cardWave {
+            0% { transform: translateX(-200%) skewX(-15deg); }
+            100% { transform: translateX(300%) skewX(-15deg); }
+        }
+        .card-wave {
+            position: absolute; top: 0; left: 0; bottom: 0; width: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), rgba(255,255,255,0.6), rgba(255,255,255,0.15), transparent);
+            animation: cardWave 3s infinite linear;
+            z-index: 5; pointer-events: none; mix-blend-mode: screen; 
+        }
+
+        /* --- STACK TRACE ACCORDION --- */
+        .stack-card {
+            will-change: transform, top;
+        }
+
+        #transit-train {
+            height: 210px;
+        }
+
+        /* Stack card cursor label */
+        #stack-cursor-label {
+            position: fixed;
+            pointer-events: none;
+            z-index: 10003;
+            transform: translate(18px, -50%);
+            opacity: 0;
+            transition: opacity 0.18s ease;
+            will-change: transform, opacity;
+            white-space: nowrap;
+            background: var(--navy);
+            color: #ECE8E1;
+            font-family: 'Schoolbell', cursive;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 5px 10px;
+            border: 1.5px solid var(--red);
+            box-shadow: 3px 3px 0 var(--red);
+            line-height: 1;
+        }
+        #stack-cursor-label.visible { opacity: 1; }
+
+        @media (hover: none), (max-width: 767px) {
+            #stack-cursor-label { display: none !important; }
+        }
+
+        /* Gallery / Insomniac Work cursor label */
+        #gallery-cursor-label {
+            position: fixed;
+            pointer-events: none;
+            z-index: 10003;
+            transform: translate(18px, -50%);
+            opacity: 0;
+            transition: opacity 0.18s ease;
+            will-change: transform, opacity;
+            white-space: nowrap;
+            background: var(--red);
+            color: #FFFFFF;
+            font-family: 'Schoolbell', cursive;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 5px 10px;
+            border: 1.5px solid var(--red-hot);
+            box-shadow: 3px 3px 0 var(--red-hot);
+            line-height: 1;
+        }
+        #gallery-cursor-label.visible { opacity: 1; }
+
+        @media (hover: none), (max-width: 767px) {
+            #gallery-cursor-label { display: none !important; }
+        }
+
+        /* Dissection case-study cursor label */
+        #dissect-scroll-label {
+            position: fixed;
+            pointer-events: none;
+            z-index: 10003;
+            transform: translate(18px, -50%);
+            opacity: 0;
+            transition: opacity 0.18s ease;
+            will-change: transform, opacity;
+            white-space: nowrap;
+            background: #0a0a0a;
+            color: #ECE8E1;
+            font-family: 'Schoolbell', cursive;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 5px 10px;
+            border: 1.5px solid #ECE8E1;
+            box-shadow: 3px 3px 0 #ECE8E1;
+            line-height: 1;
+        }
+        #dissect-scroll-label.visible { opacity: 1; }
+
+        @media (hover: none), (max-width: 767px) {
+            #dissect-scroll-label { display: none !important; }
+        }
+
+        .card-expand {
+            max-height: 0; 
+            overflow: hidden; 
+            transition: max-height 0.5s cubic-bezier(0.23,1,0.32,1), opacity 0.4s ease, margin-top 0.4s ease; 
+            opacity: 0; 
+        }
+        .card-expand.open {
+            max-height: 800px;
+            opacity: 1;
+        }
+
+        /* --- DIARY REALISM STYLES --- */
+        .paper-texture {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+            mix-blend-mode: multiply;
+            pointer-events: none;
+        }
+
+        .page-crease-left {
+            background: linear-gradient(to right, transparent 75%, rgba(0,0,0,0.04) 88%, rgba(0,0,0,0.12) 100%);
+        }
+        .page-crease-right {
+            background: linear-gradient(to left, transparent 75%, rgba(0,0,0,0.04) 88%, rgba(0,0,0,0.12) 100%);
+        }
+
+        /* 3D Book Spine Hinge and Turning Mechanics */
+        .book-viewport {
+            perspective: 2200px;
+            transform-style: preserve-3d;
+        }
+
+        .book-container {
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        /* Double-sided leaf structures */
+        .book-page-turning {
+            transform-style: preserve-3d;
+            transform-origin: left center;
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            top: 0;
+            right: 0; /* Cover rests on the right half when closed */
+            z-index: 30;
+            will-change: transform;
+        }
+
+        .page-face {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            overflow: hidden;
+        }
+
+        .page-face-front {
+            /* Front of the physical cover */
+            transform: rotateY(0deg);
+        }
+
+        .page-face-back {
+            /* Inside of the cover (becomes Left Page when open) */
+            transform: rotateY(180deg);
+        }
+        
+        .realistic-paper-stack-right {
+            box-shadow: 
+                0px 0px 0px 1px rgba(0,0,0,0.1),
+                1px 1px 0px #e0dbc6,
+                2px 2px 0px #d8d3bc,
+                3px 3px 0px #d0cab2,
+                4px 4px 0px #c8c2a8,
+                5px 5px 0px #bfb99e,
+                12px 12px 20px rgba(0,0,0,0.3);
+        }
+
+        .realistic-paper-stack-left {
+            box-shadow: 
+                0px 0px 0px 1px rgba(0,0,0,0.1),
+                -1px 1px 0px #e0dbc6,
+                -2px 2px 0px #d8d3bc,
+                -3px 3px 0px #d0cab2,
+                -4px 4px 0px #c8c2a8,
+                -5px 5px 0px #bfb99e,
+                -12px 12px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Scotch Tape Realistic Elements */
+        .scotch-tape {
+            background: rgba(245, 240, 215, 0.35);
+            backdrop-filter: blur(0.5px);
+            border-left: 1px dashed rgba(255, 46, 147, 0.3);
+            border-right: 1px dashed rgba(255, 46, 147, 0.3);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            transform: rotate(-3deg);
+            mix-blend-mode: multiply;
+        }
+        .scotch-tape::before, .scotch-tape::after {
+            content: '';
+            position: absolute;
+            left: 0; right: 0; height: 4px;
+            background-size: 6px 4px;
+        }
+        .scotch-tape::before {
+            top: -4px;
+            background-image: linear-gradient(45deg, transparent 75%, rgba(220,215,190,0.4) 75%), linear-gradient(-45deg, transparent 75%, rgba(220,215,190,0.4) 75%);
+        }
+        .scotch-tape::after {
+            bottom: -4px;
+            background-image: linear-gradient(45deg, transparent 75%, rgba(220,215,190,0.4) 75%), linear-gradient(-45deg, transparent 75%, rgba(220,215,190,0.4) 75%);
+        }
+
+        /* Realistic Pushpin Elements */
+        .pushpin {
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle at 35% 35%, #ff3b30 0%, #b30000 70%, #660000 100%);
+            border-radius: 50%;
+            box-shadow: 
+                0 1px 1px rgba(0,0,0,0.3),
+                3px 5px 4px rgba(0,0,0,0.35);
+            position: relative;
+        }
+        .pushpin::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 4px; height: 4px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) translate(-2px, -2px);
+        }
+
+        /* Blueprint Line SVG Animation Classes */
+        .map-line-path {
+            stroke: var(--red);
+            stroke-width: 2;
+            fill: none;
+            stroke-dasharray: 4000;
+            stroke-dashoffset: 4000;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Focus lifts for active elements */
+        .focus-lift-target {
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease, filter 0.6s ease;
+            will-change: transform, opacity, filter;
+        }
+
+        /* Dynamic Circle Drawing around FOUND MY THING */
+        .glowing-circle-path {
+            stroke: var(--red);
+            stroke-width: 2.5;
+            fill: none;
+            stroke-dasharray: 600;
+            stroke-dashoffset: 600;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 4px var(--red-glow));
+            transition: stroke-dashoffset 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .glowing-circle-path.draw-active {
+            stroke-dashoffset: 0;
+        }
+
+        /* Redacted / Evidence highlights */
+        .marker-highlight {
+            background: linear-gradient(104deg, transparent 0%, rgba(255, 46, 59, 0) 1%, var(--red-soft) 4%, var(--red-soft) 96%, transparent 100%);
+            display: inline-block;
+            padding: 2px 8px;
+            transform: rotate(-1deg);
+            border: 1px dashed var(--red);
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.05);
+        }
+
+        /* --- EVIDENCE STYLE STAMPS --- */
+        .evidence-stamp-red {
+            border: 2.5px solid rgba(185, 28, 28, 0.85);
+            color: rgba(185, 28, 28, 0.9);
+            transform: rotate(-3.5deg);
+            box-shadow: inset 0 0 4px rgba(185,28,28,0.1), 2px 4px 10px rgba(0,0,0,0.08);
+            background: rgba(254, 242, 242, 0.3);
+        }
+        .evidence-stamp-yellow {
+            border: 2px dashed rgba(161, 98, 7, 0.85);
+            color: rgba(161, 98, 7, 0.95);
+            transform: rotate(2deg);
+            box-shadow: 2px 4px 10px rgba(0,0,0,0.06);
+            background: rgba(254, 252, 232, 0.35);
+        }
+        .evidence-stamp-blue {
+            border: 2.5px solid rgba(1, 44, 235, 0.8);
+            color: rgba(1, 44, 235, 0.95);
+            transform: rotate(-1.5deg);
+            box-shadow: 2px 4px 10px rgba(1, 44, 235, 0.08);
+            background: rgba(239, 246, 255, 0.3);
+        }
+
+        /* Custom realistic lined/grid paper backgrounds */
+        .ruled-paper-lines {
+            background-size: 100% 24px;
+            background-image: linear-gradient(rgba(1, 44, 235, 0.06) 1px, transparent 1px);
+        }
+
+        /* --- PHYSICAL DRAGGABLE STICKER DESIGNS --- */
+        .draggable-sticker {
+            position: absolute;
+            z-index: 100;
+            cursor: grab !important;
+            user-select: none;
+            touch-action: none;
+            will-change: transform, box-shadow;
+            filter: drop-shadow(4px 8px 12px rgba(5,16,36,0.3));
+            transition: transform 0.15s ease-out;
+        }
+        .draggable-sticker:active {
+            cursor: grabbing !important;
+            filter: drop-shadow(8px 16px 20px rgba(5,16,36,0.4));
+        }
+        /* Paper Sticker White Border Matte Outline */
+        .sticker-matte-base {
+            background-color: white;
+            border: 4px solid white;
+            border-radius: 12px;
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.12), inset 0 0 4px rgba(0,0,0,0.06);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sticker-diecut-round {
+            border-radius: 50%;
+            background-color: white;
+            border: 4.5px solid white;
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.12), inset 0 0 4px rgba(0,0,0,0.06);
+        }
+
+        /* --- DIARY TYPOGRAPHY ADAPTATIONS --- */
+        /* Epilogue quote: Schoolbell, readable size, relaxed leading, no uppercase */
+        #epilogue-quote {
+            font-family: 'Schoolbell', cursive !important;
+            font-size: clamp(14px, 1.6vw, 20px) !important;
+            font-weight: 400 !important;
+            text-transform: none !important;
+            letter-spacing: 0.02em !important;
+            line-height: 1.65 !important;
+        }
+
+        /* Philosophy card: Schoolbell headline + body */
+        #art-terminal h4 {
+            font-family: 'Schoolbell', cursive !important;
+            font-weight: 700 !important;
+            font-size: clamp(18px, 1.6vw, 22px) !important;
+            letter-spacing: -0.025em !important;
+        }
+        #art-terminal p.relative {
+            font-family: 'Schoolbell', cursive !important;
+            font-size: clamp(12px, 1.1vw, 14px) !important;
+            color: rgba(0, 0, 0, 0.8) !important;
+            line-height: 1.55 !important;
+        }
+
+        /* Micro story (left page narrative block) */
+        #origin-micro-story {
+            font-size: clamp(12px, 1.2vw, 15px) !important;
+            line-height: 1.65 !important;
+        }
+
+        /* Intro sticky note typewriter text */
+        #intro-sticky-note .relative.z-10 > p {
+            font-size: clamp(13px, 1.2vw, 15px) !important;
+            line-height: 24px !important;
+        }
+        #intro-sticky-note .relative.z-10 > p > span {
+            font-size: clamp(12px, 1.1vw, 14px) !important;
+        }
+
+        /* "how it all started" cursive annotation */
+        #frag-origin-cursive {
+            font-size: clamp(20px, 2.2vw, 28px) !important;
+        }
+
+        /* Strategy annotation multi-line */
+        #frag-strategy-annot {
+            font-size: clamp(12px, 1.3vw, 16px) !important;
+            font-weight: 700 !important;
+            line-height: 1.35 !important;
+        }
+        #frag-strategy-annot span {
+            font-size: clamp(14px, 1.5vw, 18px) !important;
+        }
+
+        /* "crazy what happens" annotation */
+        #art-stats > div:last-child {
+            font-size: clamp(13px, 1.2vw, 15px) !important;
+            line-height: 1.35 !important;
+        }
+
+        /* Evidence stamp annotations (Gloria Hallelujah captions) */
+        .evidence-stamp-red > span:last-child {
+            font-size: clamp(11px, 1.1vw, 15px) !important;
+            line-height: 1.3 !important;
+        }
+        .evidence-stamp-yellow > span:last-child {
+            font-size: clamp(9px, 0.95vw, 12px) !important;
+            line-height: 1.3 !important;
+        }
+        .evidence-stamp-blue > span:last-child {
+            font-size: clamp(11px, 1.1vw, 15px) !important;
+            line-height: 1.3 !important;
+        }
+
+        /* Torn signature paper */
+        #torn-signature-paper > div:last-child {
+            font-size: clamp(22px, 2.2vw, 30px) !important;
+            line-height: 1.1 !important;
+        }
+
+        /* Footnote / PS block */
+        #other-highlights-block {
+            font-size: clamp(9px, 0.85vw, 10px) !important;
+            color: rgba(34, 34, 34, 0.8) !important;
+        }
+
+        /* Bottom footer labels on both pages */
+        #about .flex.justify-between.items-end.font-\[\'Schoolbell\'\] {
+            font-size: clamp(9px, 0.85vw, 14px) !important;
+            opacity: 0.7 !important;
+        }
+        #about .flex.flex-col.items-start.gap-1.font-\[\'Schoolbell\'\] {
+            font-size: clamp(9px, 0.85vw, 14px) !important;
+            color: rgba(34, 34, 34, 0.8) !important;
+        }
+
+        /* Responsive tiers */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            #epilogue-quote       { font-size: 16px !important; }
+            #art-terminal h4      { font-size: 19px !important; }
+            #art-terminal p.relative { font-size: 12px !important; }
+            #frag-origin-cursive  { font-size: 21px !important; }
+            #frag-strategy-annot  { font-size: 13px !important; }
+            #frag-strategy-annot span { font-size: 15px !important; }
+            #origin-micro-story   { font-size: 12px !important; }
+            #torn-signature-paper > div:last-child { font-size: 22px !important; }
+            .evidence-stamp-red > span:last-child  { font-size: 11px !important; }
+            .evidence-stamp-blue > span:last-child { font-size: 11px !important; }
+        }
+        @media (min-width: 1024px) and (max-width: 1440px) {
+            #epilogue-quote       { font-size: 17px !important; }
+            #art-terminal h4      { font-size: 20px !important; }
+            #frag-origin-cursive  { font-size: 24px !important; }
+            #torn-signature-paper > div:last-child { font-size: 26px !important; }
+        }
+        @media (min-width: 1441px) and (max-width: 1920px) {
+            #epilogue-quote       { font-size: 19px !important; }
+            #frag-origin-cursive  { font-size: 27px !important; }
+            #torn-signature-paper > div:last-child { font-size: 29px !important; }
+        }
+        @media (min-width: 1921px) {
+            #epilogue-quote       { font-size: 20px !important; }
+            #frag-origin-cursive  { font-size: 28px !important; }
+            #torn-signature-paper > div:last-child { font-size: 30px !important; }
+        }
+
+        /* --- DIARY CINEMATIC FOCAL OVERLAY --- */
+        #diary-focal-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 198;
+            opacity: 0;
+            will-change: opacity;
+            background: radial-gradient(
+                ellipse 40vw 44vh at 50% 50%,
+                transparent 0%,
+                transparent 28%,
+                rgba(1, 2, 4, 0.45) 52%,
+                rgba(1, 2, 4, 0.82) 74%,
+                rgba(1, 2, 4, 0.96) 100%
+            );
+        }
+
+        /* --- AWARD-WINNING HERO LABELS --- */
+        .hero-label-item {
+            position: relative;
+            overflow: hidden;
+            display: block;
+        }
+        .hero-label-primary {
+            display: block;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+            will-change: transform, opacity;
+        }
+        .hero-label-secondary {
+            display: block;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            color: var(--blue);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+            will-change: transform, opacity;
+            text-align: inherit;
+            width: 100%;
+            text-shadow: 0 0 12px rgba(0, 0, 0, 0.25);
+            opacity: 0;
+        }
+        .group:hover .hero-label-primary { transform: translateY(-110%) skewY(-4deg); opacity: 0; }
+        .group:hover .hero-label-secondary { transform: translateY(-100%) skewY(0deg); opacity: 1; }
+        
+        .delay-1 { transition-delay: 0.05s; }
+        .delay-2 { transition-delay: 0.1s; }
+        
+        .transform-style-3d {
+            transform-style: preserve-3d;
+            perspective: 800px;
+        }
+
+        
+        /* --- STREAMING_CHUNK: Defining hanging paper hinge coordinates... */
+        .hanging-hinge-top { transform-origin: top center !important; }
+        .hanging-hinge-left { transform-origin: top left !important; }
+
+        /* --- BRUTALIST CASE STUDY CSS OVERRIDES --- */
+        .brutal-wrap { padding: 4rem 3rem; display: flex; flex-direction: column; gap: 2rem; font-family: 'Inter', sans-serif; }
+        @media (max-width: 768px) { .brutal-wrap { padding: 2.5rem 1.5rem; } }
+        .brutal-overline { font-family: 'Schoolbell', cursive; font-size: 14px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; border-bottom: 4px solid var(--text-color); padding-bottom: 8px; display: inline-block; margin-bottom: 1rem; color: var(--text-color); }
+        .brutal-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(80px, 16vw, 180px); line-height: 0.85; letter-spacing: -0.02em; margin-bottom: 1rem; text-transform: uppercase; color: var(--text-color); }
+        .brutal-sub { font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 800; margin-bottom: 2rem; border: 4px solid var(--text-color); padding: 12px; display: inline-block; text-transform: uppercase; background: var(--text-color); color: var(--bg-color); }
+        .brutal-tags { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 3rem; }
+        .brutal-tag { font-family: 'Schoolbell', cursive; font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; border: 4px solid var(--text-color); padding: 6px 12px; background: transparent; color: var(--text-color); }
+        .brutal-hook { font-family: 'Inter', sans-serif; font-weight: 900; font-size: clamp(24px, 4vw, 36px); line-height: 1.1; letter-spacing: -0.04em; border-left: 12px solid var(--text-color); padding-left: 2rem; margin: 3rem 0; color: var(--text-color); }
+        
+        .brutal-split { display: grid; grid-template-columns: 1fr 1fr; border: 8px solid var(--text-color); margin: 3rem 0; }
+        @media (max-width: 768px) { .brutal-split { grid-template-columns: 1fr; } }
+        .brutal-split-left, .brutal-split-right { padding: 3rem; display: flex; flex-direction: column; }
+        .brutal-split-left { border-right: 8px solid var(--text-color); background: var(--bg-color); color: var(--text-color); }
+        .brutal-split-right { background: var(--text-color); color: var(--bg-color); }
+        @media (max-width: 768px) { .brutal-split-left { border-right: none; border-bottom: 8px solid var(--text-color); } }
+        .brutal-split-title { font-family: 'Schoolbell', cursive; font-size: 16px; font-weight: 800; text-transform: uppercase; border-bottom: 4px solid currentColor; padding-bottom: 8px; margin-bottom: 1.5rem; letter-spacing: 0.1em; }
+        .brutal-split-body { font-family: 'Inter', sans-serif; font-weight: 900; font-size: 24px; line-height: 1.2; letter-spacing: -0.02em; }
+        
+        .brutal-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); border: 8px solid var(--text-color); margin: 2rem 0; }
+        .brutal-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); border: 8px solid var(--text-color); margin: 2rem 0; }
+        @media (max-width: 768px) { .brutal-grid-3, .brutal-grid-2 { grid-template-columns: 1fr; } }
+        .brutal-grid-item { padding: 2rem; border-right: 8px solid var(--text-color); border-bottom: 8px solid var(--text-color); display: flex; flex-direction: column; color: var(--text-color); }
+        .brutal-grid-3 .brutal-grid-item:nth-child(3n) { border-right: none; }
+        .brutal-grid-2 .brutal-grid-item:nth-child(2n) { border-right: none; }
+        .brutal-grid-3 .brutal-grid-item:not(:nth-last-child(-n+3)) { border-bottom: 8px solid var(--text-color); }
+        .brutal-grid-2 .brutal-grid-item:not(:nth-last-child(-n+2)) { border-bottom: 8px solid var(--text-color); }
+        .brutal-grid-3 .brutal-grid-item:nth-last-child(-n+3), .brutal-grid-2 .brutal-grid-item:nth-last-child(-n+2) { border-bottom: none; }
+        @media (max-width: 768px) { 
+            .brutal-grid-3 .brutal-grid-item, .brutal-grid-2 .brutal-grid-item { border-right: none !important; border-bottom: 8px solid var(--text-color) !important; } 
+            .brutal-grid-3 .brutal-grid-item:last-child, .brutal-grid-2 .brutal-grid-item:last-child { border-bottom: none !important; }
+        }
+        
+        .brutal-num { font-family: 'Bebas Neue', sans-serif; font-size: 80px; line-height: 0.8; margin-bottom: 1rem; letter-spacing: -0.02em; }
+        .brutal-item-title { font-family: 'Inter', sans-serif; font-weight: 900; font-size: 24px; text-transform: uppercase; margin-bottom: 1rem; border-bottom: 4px solid var(--text-color); padding-bottom: 8px; }
+        .brutal-item-desc { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; line-height: 1.5; text-transform: uppercase; }
+        
+        .brutal-contact-sheet { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; margin: 4rem 0; }
+        .brutal-img-wrap { position: relative; filter: saturate(0.85) contrast(1.05); transition: filter 0.2s, box-shadow 0.2s, transform 0.2s; min-height: 300px; display: flex; flex-direction: column; overflow: hidden; border-radius: 12px; }
+        .brutal-img-wrap:hover { filter: saturate(1.1) contrast(1.1); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .brutal-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; mix-blend-mode: normal; flex-grow: 1;}
+        .brutal-img-meta { position: absolute; top: 0; left: 0; background: var(--text-color); color: var(--bg-color); font-family: 'Schoolbell', cursive; font-size: 12px; font-weight: 800; padding: 6px 12px; text-transform: uppercase; z-index: 10; border-bottom: 4px solid var(--bg-color); border-right: 4px solid var(--bg-color); }
+        
+        .brutal-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; margin: 4rem 0; }
+        .brutal-stat-card { border: 8px solid var(--text-color); padding: 2rem; display: flex; flex-direction: column; box-shadow: 16px 16px 0px var(--text-color); background: var(--bg-color); color: var(--text-color); }
+        .brutal-stat-big { font-family: 'Bebas Neue', sans-serif; font-size: clamp(80px, 10vw, 140px); line-height: 0.8; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+        .brutal-stat-label { font-family: 'Schoolbell', cursive; font-size: 14px; font-weight: 800; text-transform: uppercase; border-top: 6px solid var(--text-color); padding-top: 1rem; margin-top: auto; letter-spacing: 0.1em; }
+        .brutal-stat-sub { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; margin-bottom: 2rem; text-transform: uppercase; }
+
+        .brutal-flow-container { border: 8px solid var(--text-color); padding: 2rem; background: var(--bg-color); overflow-x: auto; margin-bottom: 2rem; box-shadow: 16px 16px 0px var(--text-color); }
+    
+        /* --- GALLERY MARQUEE --- */
+        @keyframes marquee-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        @keyframes marquee-right {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+        }
+
+        /* --- ATTENTION PULSE --- */
+        @keyframes outlinePulse {
+            0% { outline: 4px solid rgba(212, 160, 23, 0.7); outline-offset: 0px; }
+            70% { outline: 4px solid rgba(212, 160, 23, 0); outline-offset: 15px; }
+            100% { outline: 4px solid rgba(212, 160, 23, 0); outline-offset: 15px; }
+        }
+        .attention-pulse {
+            animation: outlinePulse 2s infinite ease-out;
+        }
+        .animate-marquee-left { animation: marquee-left 40s linear infinite; }
+        .animate-marquee-right { animation: marquee-right 45s linear infinite; }
+        .hover-pause:hover { animation-play-state: paused; }
+
+        /* --- DYNAMIC MOCKUPS & HOVER EFFECTS (WANDER) --- */
+        .mockup-scene { 
+            position: relative; height: 450px; width: 100%; display: flex; justify-content: center; align-items: center; 
+            perspective: 1200px; margin: 4rem 0; overflow: visible; z-index: 10;
+        }
+        @media (max-width: 768px) { .mockup-scene { transform: scale(0.65); height: 280px; margin: 1rem 0; } }
+        
+        .mockup-phone { 
+            position: absolute; width: 240px; height: auto;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); 
+            display: flex; flex-direction: column; 
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6)) saturate(0.85) contrast(1.05); 
+            will-change: transform, filter;
+        }
+        
+        /* Pre-scroll state: tightly stacked */
+        .mockup-left { transform: translateX(-40px) rotate(-4deg) translateY(10px); z-index: 1; }
+        .mockup-center { transform: translateY(0px) rotate(0deg); z-index: 3; }
+        .mockup-right { transform: translateX(40px) rotate(4deg) translateY(10px); z-index: 2; }
+        
+        /* Scrolled into view: splayed out */
+        .mockup-scene.is-visible .mockup-left { transform: translateX(-150px) rotate(-8deg) translateY(15px); }
+        .mockup-scene.is-visible .mockup-center { transform: translateY(0px) rotate(0deg); }
+        .mockup-scene.is-visible .mockup-right { transform: translateX(150px) rotate(8deg) translateY(15px); }
+        
+        /* On hover of scene: push them far apart sidewards to prevent clashing, and scale down unhovered */
+        .mockup-scene.is-visible:hover .mockup-left { transform: translateX(-240px) rotate(-8deg) translateY(15px) scale(0.9); filter: drop-shadow(0 15px 30px rgba(0,0,0,0.4)) saturate(0.8) brightness(0.7); }
+        .mockup-scene.is-visible:hover .mockup-center { transform: translateY(0px) rotate(0deg) scale(0.9); filter: drop-shadow(0 15px 30px rgba(0,0,0,0.4)) saturate(0.8) brightness(0.7); }
+        .mockup-scene.is-visible:hover .mockup-right { transform: translateX(240px) rotate(8deg) translateY(15px) scale(0.9); filter: drop-shadow(0 15px 30px rgba(0,0,0,0.4)) saturate(0.8) brightness(0.7); }
+        
+        /* Hovered item: moves slightly upwards and sidewards from its new pushed position */
+        .mockup-scene.is-visible .mockup-left:hover { transform: translateX(-260px) rotate(-4deg) translateY(-10px) scale(1) !important; filter: drop-shadow(0 30px 60px rgba(0,0,0,0.8)) saturate(1.1) brightness(1) contrast(1.05) !important; z-index: 10 !important; }
+        .mockup-scene.is-visible .mockup-center:hover { transform: translateY(-15px) rotate(0deg) scale(1) !important; filter: drop-shadow(0 30px 60px rgba(0,0,0,0.8)) saturate(1.1) brightness(1) contrast(1.05) !important; z-index: 10 !important; }
+        .mockup-scene.is-visible .mockup-right:hover { transform: translateX(260px) rotate(4deg) translateY(-10px) scale(1) !important; filter: drop-shadow(0 30px 60px rgba(0,0,0,0.8)) saturate(1.1) brightness(1) contrast(1.05) !important; z-index: 10 !important; }
+
+        /* --- SPLAYED CARD DECK (DROP / RNTL) --- */
+        .splayed-deck { 
+            position: relative; height: 420px; width: 100%; display: flex; justify-content: center; 
+            align-items: center; margin: 4rem 0;
+        }
+        @media (max-width: 768px) { .splayed-deck { transform: scale(0.6); height: 260px; margin: 1rem 0; } }
+        
+        .splayed-card { 
+            position: absolute; width: 220px; height: auto; min-height: 340px; background: transparent; 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            overflow: hidden; transform-origin: bottom center; display: flex; flex-direction: column;
+            will-change: transform, filter, z-index;
+            border-radius: 12px;
+        }
+        
+        /* Pre-scroll state: tightly stacked */
+        .splayed-card:nth-child(1) { transform: translateX(-60px) rotate(-6deg) translateY(15px); z-index: 1; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6)) saturate(0.7) brightness(0.5); }
+        .splayed-card:nth-child(2) { transform: translateX(-30px) rotate(-3deg) translateY(5px); z-index: 2; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6)) saturate(0.7) brightness(0.5); }
+        .splayed-card:nth-child(3) { transform: translateX(0px) rotate(0deg) translateY(0px); z-index: 3; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6)) saturate(1.1) brightness(1) contrast(1.05); }
+        .splayed-card:nth-child(4) { transform: translateX(30px) rotate(3deg) translateY(5px); z-index: 2; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6)) saturate(0.7) brightness(0.5); }
+        .splayed-card:nth-child(5) { transform: translateX(60px) rotate(6deg) translateY(15px); z-index: 1; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6)) saturate(0.7) brightness(0.5); }
+
+        /* Scrolled into view: splayed out (tighter to match Krishna's mockups) */
+        .splayed-deck.is-visible .splayed-card:nth-child(1) { transform: translateX(-160px) rotate(-10deg) translateY(20px); }
+        .splayed-deck.is-visible .splayed-card:nth-child(2) { transform: translateX(-80px) rotate(-5deg) translateY(10px); }
+        .splayed-deck.is-visible .splayed-card:nth-child(3) { transform: translateX(0px) rotate(0deg) translateY(-10px) scale(1.05); }
+        .splayed-deck.is-visible .splayed-card:nth-child(4) { transform: translateX(80px) rotate(5deg) translateY(10px); }
+        .splayed-deck.is-visible .splayed-card:nth-child(5) { transform: translateX(160px) rotate(10deg) translateY(20px); }
+
+        /* On hover of deck: push apart but not off-screen */
+        .splayed-deck.is-visible:hover .splayed-card:nth-child(1) { transform: translateX(-300px) rotate(-10deg) translateY(20px) scale(0.9); opacity: 0.8; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6)) saturate(0.7) brightness(0.5); }
+        .splayed-deck.is-visible:hover .splayed-card:nth-child(2) { transform: translateX(-150px) rotate(-5deg) translateY(10px) scale(0.9); opacity: 0.8; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6)) saturate(0.7) brightness(0.5); }
+        .splayed-deck.is-visible:hover .splayed-card:nth-child(3) { transform: translateX(0px) rotate(0deg) translateY(-10px) scale(0.9); opacity: 0.8; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6)) saturate(0.7) brightness(0.5); }
+        .splayed-deck.is-visible:hover .splayed-card:nth-child(4) { transform: translateX(150px) rotate(5deg) translateY(10px) scale(0.9); opacity: 0.8; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6)) saturate(0.7) brightness(0.5); }
+        .splayed-deck.is-visible:hover .splayed-card:nth-child(5) { transform: translateX(300px) rotate(10deg) translateY(20px) scale(0.9); opacity: 0.8; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6)) saturate(0.7) brightness(0.5); }
+
+        /* Hovered item: keep scale(1) and move slightly upwards and outwards */
+        .splayed-deck.is-visible .splayed-card:nth-child(1):hover { transform: translateX(-320px) rotate(-6deg) translateY(-10px) scale(1) !important; filter: drop-shadow(0 30px 60px rgba(0,0,0,0.8)) saturate(1.1) brightness(1) contrast(1.05) !important; opacity: 1 !important; z-index: 20 !important; }
+        .splayed-deck.is-visible .splayed-card:nth-child(2):hover { transform: translateX(-160px) rotate(-3deg) translateY(-10px) scale(1) !important; filter: drop-shadow(0 30px 60px rgba(0,0,0,0.8)) saturate(1.1) brightness(1) contrast(1.05) !important; opacity: 1 !important; z-index: 20 !important; }
+        .splayed-deck.is-visible .splayed-card:nth-child(3):hover { transform: translateX(0px) rotate(0deg) translateY(-20px) scale(1) !important; filter: drop-shadow(0 30px 60px rgba(0,0,0,0.8)) saturate(1.1) brightness(1) contrast(1.05) !important; opacity: 1 !important; z-index: 20 !important; }
+        .splayed-deck.is-visible .splayed-card:nth-child(4):hover { transform: translateX(160px) rotate(3deg) translateY(-10px) scale(1) !important; filter: drop-shadow(0 30px 60px rgba(0,0,0,0.8)) saturate(1.1) brightness(1) contrast(1.05) !important; opacity: 1 !important; z-index: 20 !important; }
+        .splayed-deck.is-visible .splayed-card:nth-child(5):hover { transform: translateX(320px) rotate(6deg) translateY(-10px) scale(1) !important; filter: drop-shadow(0 30px 60px rgba(0,0,0,0.8)) saturate(1.1) brightness(1) contrast(1.05) !important; opacity: 1 !important; z-index: 20 !important; }
+
+        /* --- PROJECTS BG GLORIA DRIFT --- */
+        @keyframes proj-gloria-drift {
+            0%   { transform: translateX(5vw)  translateY(3vh); }
+            50%  { transform: translateX(-48vw) translateY(-2vh); }
+            100% { transform: translateX(-92vw) translateY(4vh); }
+        }
+
+        /* --- BILLBOARD STATION NAME FLOAT --- */
+        @keyframes billboard-hover {
+            0%   { transform: rotate(-4deg) translateY(0px); }
+            50%  { transform: rotate(-4deg) translateY(-7px); }
+            100% { transform: rotate(-4deg) translateY(0px); }
+        }
+        .billboard-float {
+            animation: billboard-hover 3.8s ease-in-out infinite;
+            will-change: transform;
+        }
+
+        /* ============================================================
+           RESPONSIVE FOUNDATION & DESKTOP/LAPTOP FIDELITY LAYER
+           Added in audit: non-overlapping min-width tiers, fluid type,
+           overflow containment, and geometry-preserving widget scaling.
+           Kept additive so the GSAP/ScrollTrigger pixel choreography is
+           never desynchronised.
+           ============================================================ */
+
+        /* 1. Box model — reaffirm border-box for any non-Tailwind custom DOM. */
+        *, *::before, *::after { box-sizing: border-box; }
+
+        /* 2. Horizontal-overflow containment. Strategic, not a blanket fix:
+           the scroll surface (#world-viewport) already clips X; we reinforce
+           the document root + main flow so transformed/absolute children can
+           never spawn a rogue horizontal scrollbar at any width. */
+        html, body { max-width: 100%; overflow-x: clip; }
+        #world-container { max-width: 100vw; overflow-x: clip; }
+
+
+        /* 3. Fluid typography for the brutalist case-study section.
+           These were hard px and stopped scaling on laptop/desktop widths,
+           causing undersized display type on large monitors. */
+        .brutal-sub        { font-size: clamp(14px, 1.05vw, 18px); }
+        .brutal-split-body { font-size: clamp(20px, 1.7vw, 30px); }
+        .brutal-num        { font-size: clamp(64px, 6vw, 104px); }
+        .brutal-item-title { font-size: clamp(20px, 1.5vw, 28px); }
+        .brutal-item-desc  { font-size: clamp(13px, 0.95vw, 16px); }
+        .brutal-stat-sub   { font-size: clamp(13px, 0.95vw, 16px); }
+
+        /* ============================================================
+           PHASE 2 — DYNAMIC VIEWPORT HEIGHT
+           Progressive enhancement: browsers that understand dvh get
+           the true visible-area height (no jump on address-bar hide/show
+           or OS snapping). Others fall back to the vh already set above.
+           !important on .h-screen only — needed because Tailwind CDN
+           injects its utilities AFTER this static block in the cascade.
+           ============================================================ */
+        @supports (height: 100dvh) {
+            #world-viewport         { height: 100dvh; }
+            #world-container        { min-height: 100dvh; }
+        }
+
+        /* ============================================================
+           PHASE 1 — FLUID HEADING & TITLE PRIMITIVES
+           Compound clamp: (vw × multiplier) + rem offset gives a slope
+           that exactly matches the container resize speed.
+           ============================================================ */
+        .heading-class {
+            font-size: clamp(44px, 5.5vw + 0.5rem, 112px);
+            line-height: 1.0;
+            letter-spacing: -0.03em;
+        }
+        .title-class {
+            font-size: clamp(28px, 3vw + 0.25rem, 64px);
+            line-height: 1.1;
+            letter-spacing: -0.025em;
+        }
+
+        /* ============================================================
+           PHASE 1 — SURGICAL FLUID OVERRIDES
+           Targeted at hard-pixel freezes identified in the audit.
+           !important wins over same-specificity Tailwind CDN utilities.
+           ============================================================ */
+
+        /* Preloader display type: lg:text-[110px] frozen from 1024px+ */
+        #preloader-content > div:nth-child(2) {
+            font-size: clamp(48px, 6.8vw, 124px) !important;
+        }
+
+        /* Projects h2: lg:text-[11vw] uncapped — balloons on 4K */
+        #proj-section-badge + h2 {
+            font-size: clamp(52px, 9.5vw, 200px) !important;
+        }
+
+        /* Origin headline: frozen at 38px from 1024px+ */
+        #origin-headline {
+            font-size: clamp(20px, 2.5vw, 52px) !important;
+        }
+
+        /* Delhi Metro welcome overlay — responsive h2 sizes */
+        #metro-door-text h2 { font-size: clamp(52px, 9vw, 80px) !important; }
+        @media (min-width: 768px)  { #metro-door-text h2 { font-size: 140px !important; } }
+        @media (min-width: 1024px) { #metro-door-text h2 { font-size: 100px !important; } }
+        @media (min-width: 1280px) { #metro-door-text h2 { font-size: 120px !important; } }
+        @media (min-width: 1921px) { #metro-door-text h2 { font-size: clamp(120px, 9vw, 180px) !important; } }
+        #metro-door-text p  { font-size: clamp(18px, 3.2vw, 56px) !important; }
+
+        /* Footer signature: fixed 50px on md+ collapses on snapped window */
+        #contact > div:last-child > span {
+            font-size: clamp(26px, 3.2vw, 60px) !important;
+        }
+
+        /* Route board height — allows label overflow at narrow desktop widths */
+        #fixed-route-board { height: clamp(110px, calc(12vw + 10px), 175px); transform: rotate(-1.2deg); }
+
+        /* ============================================================
+           PHASE 3 — DESKTOP / LAPTOP MEDIA QUERY TIERS
+           Four non-overlapping, non-redundant ranges.
+           Each tier is additive — no prior rules are removed or zeroed.
+           ============================================================ */
+
+        /* ── Tier 0: Small laptops / OS-snapped windows — 768–1023px ──
+           The md→lg gap: Tailwind's md: breakpoint is active but lg: is
+           not. Priority: stop widget overflow and flex-wrap collisions.
+           Note: mobile scale(0.65) already set in base .mockup-scene/.splayed-deck.
+           This tier re-anchors those widgets for windowed desktop use. */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .mockup-scene   { transform: scale(0.72); margin-block: 0; }
+            .splayed-deck   { transform: scale(0.70); margin-block: 0; }
+
+            .nav-item       { font-size: 0.7rem;  letter-spacing: 0.05em; }
+            .nav-brutal     { padding: 4px; }
+            .nav-indicator  { top: 4px; bottom: 4px; }
+
+            #proj-helper-sticker {
+                max-width: 100%;
+                width: auto;
+            }
+
+            .brutal-title { font-size: clamp(56px, 10vw,  110px) !important; }
+            .brutal-hook  { font-size: clamp(18px, 2.5vw,  28px) !important; }
+        }
+
+        /* ── Tier 1: Standard laptops / desktops — 1024–1440px ──
+           Design baseline lives at 1280–1440px. The lower end of the
+           range gets a gentle scale-down on interactive spread-widgets
+           to keep ±300px card throws inside section boundaries. */
+        @media (min-width: 1024px) and (max-width: 1440px) {
+            .mockup-scene   { transform: scale(0.90); }
+            .splayed-deck   { transform: scale(0.88); }
+
+            .brutal-title { font-size: clamp(64px, 11vw,  160px) !important; }
+            .brutal-hook  { font-size: clamp(20px, 2.8vw,  32px) !important; }
+        }
+
+        /* ── Tier 2: Large monitors — 1441–1920px ──
+           Scale up standalone widgets and widen prose wrappers so
+           content reads proportionally on a 27–32-inch canvas. */
+        @media (min-width: 1441px) and (max-width: 1920px) {
+            .mockup-scene   { transform: scale(1.12); }
+            .splayed-deck   { transform: scale(1.12); }
+            .nav-item       { font-size: 0.95rem; }
+
+            #proj-section-badge {
+                font-size: clamp(11px, 0.68vw, 14px);
+            }
+
+            .brutal-wrap { max-width: 1520px; margin-inline: auto; }
+            .brutal-hook { font-size: clamp(28px, 2.1vw,  40px) !important; }
+        }
+
+        /* ── Tier 2.5: Standard laptop — 1280px–1440px ──
+           Nudge root rem slightly down so the layout breathes on common
+           13"/14" screens (MacBook Pro 14, Dell XPS 13, etc.) without
+           triggering the full ultra-wide scaling. */
+        @media (min-width: 1280px) and (max-width: 1440px) {
+            html { font-size: clamp(14px, 1.1vw, 15.5px); }
+        }
+
+        /* ── Tier 2.5-S: Short laptop viewports — 1280px–1440px × ≤800px tall ──
+           At 1366×768 the #experience section is forced to min-h-[800px] while the
+           viewport is only 768px. justify-center splits the overflow top and bottom;
+           the top portion is clipped by overflow-hidden, cutting off #proj-section-badge.
+           Fix: collapse the top margin on the badge's parent div only. */
+        @media (min-width: 1280px) and (max-width: 1440px) and (max-height: 800px) {
+    div:has(> #proj-section-badge) {
+        margin-top: 16px;
+    }
+    #proj-section-badge {
+        margin-bottom: 16px;
+        margin-top: 34px;
+        font-size: 9px;
+        padding: 3px 10px;
+    }
+    div:has(> #stack-area) > div:first-child {
+        margin-bottom: 16px;
+    }
+    #proj-section-badge + h2 {
+        padding-bottom: 0;
+        font-size: 10vw;
+        padding-top: 8px;
+        margin-top: 20px;
+    }
+    #experience {
+        justify-content: flex-start;
+        padding-top: 20px;
+    }
+    #proj-helper-sticker {
+        padding: 14px;
+        width: 380px;
+        position: absolute;
+        right: 80px;
+        top: 80px;
+        transform: rotate(-2deg);
+        z-index: 30;
+    }
+    div:has(> #proj-helper-sticker) {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    #proj-header-row {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+    #proj-header-row > div:first-child {
+        margin-left: 45px;
+    }
+    #stack-area {
+        margin-top: 25px;
+    }
+    #stack-area .stack-card .card-expand > div:first-child {
+        margin-bottom: 8px;
+        margin-top: 4px;
+    }
+    #stack-area .stack-card .card-expand > div:last-child {
+        gap: 16px;
+    }
+    #stack-area .stack-card .card-expand > div:last-child > div:first-child > div[class*="items-start"] {
+        margin-bottom: 8px;
+    }
+    #stack-area .stack-card .card-expand > div:last-child > div:first-child > div[class*="items-start"] > div:last-child {
+        padding-right: 4px;
+    }
+    #stack-area .stack-card .card-expand > div:last-child > div:last-child > div:last-child > div[class*="border-l-"] {
+        margin-bottom: 8px;
+    }
+    #vw-best {
+        font-size: 105px;
+    }
+    #vw-work {
+        font-size: 105px;
+    }
+    #vw-tilted-box {
+        height: 100px;
+    }
+    #transit-stations-container > div {
+        padding-bottom: 180px;
+    }
+    #transit-stations-container > div > div:last-child > div:last-child {
+        height: 230px;
+    }
+    #transit-train {
+        height: 155px;
+    }
+    #transit-train + div {
+        height: 50px;
+    }
+    #transit-next-btn {
+        width: 64px;
+        height: 64px;
+    }
+    #transit-prev-btn {
+        width: 64px;
+        height: 64px;
+    }
+    #transit-map-view > div:last-child {
+        height: 26vh;
+        bottom: -45px;
+    }
+    #fixed-route-board {
+        top: calc(82px + 20px);
+        right: calc(55px + 20px);
+        height: 150px;
+    }
+    #fixed-route-nodes .route-major .node-label {
+        font-size: 10px !important;
+    }
+    #fixed-route-nodes .route-dummy .node-label {
+        font-size: 10px !important;
+    }
+    #fixed-route-nodes .route-dot {
+        width: 10px !important;
+        height: 10px !important;
+        border-width: 2px !important;
+    }
+    #transit-train + div > div:nth-child(3) {
+        top: 12px !important;
+    }
+    #transit-train + div > div:nth-child(1) {
+        top: 20px !important;
+    }
+    #transit-train + div > div:nth-child(2) {
+        top: 10px !important;
+    }
+    #transit-train + div > div:nth-child(6) {
+        margin-top: 16px !important;
+    }
+    #transit-train + div > div:nth-child(4) {
+        margin-top: 4px !important;
+    }
+    .step-out-btn {
+        font-size: 10px !important;
+        padding: 5px 14px !important;
+        border-width: 3px !important;
+        box-shadow: 5px 5px 0 rgba(11,11,11,1) !important;
+        gap: 6px !important;
+    }
+    .step-out-btn svg {
+        width: 16px !important;
+        height: 16px !important;
+    }
+    #contact h2 span:first-child {
+        font-size: 11vw;
+    }
+    #contact h2 span:last-child {
+        font-size: 11vw;
+        margin-top: -2.5vw;
+    }
+    #contact > div:first-child > p {
+        font-size: 16px;
+    }
+    #contact > div:last-child > div:first-child > a {
+        font-size: 34px;
+        white-space: nowrap;
+    }
+    #top-ribbon {
+        height: 40px;
+    }
+    #top-ribbon > div:first-child {
+        padding-left: 24px;
+        padding-right: 24px;
+        font-size: 11px;
+    }
+    #main-nav-container {
+        bottom: 20px;
+    }
+    #main-nav .nav-item {
+        padding-top: 6px;
+        padding-bottom: 6px;
+        padding-left: 12px;
+        padding-right: 12px;
+        font-size: 12px;
+    }
+    #proj-helper-sticker > span:first-of-type {
+        font-size: 17px;
+        margin-bottom: 4px;
+        line-height: 1.1;
+    }
+    #proj-helper-sticker > span:last-of-type {
+        font-size: 13px;
+        line-height: 1.3;
+    }
+    #stack-area .stack-card {
+        padding-top: 14px;
+        padding-bottom: 14px;
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+    #stack-area .stack-card > div:nth-child(4) > div:first-child {
+        font-size: 40px;
+    }
+    #stack-area .stack-card > div:nth-child(4) {
+        margin-bottom: 8px;
+    }
+    #proj-helper-sticker > div:nth-child(2) {
+        padding-bottom: 8px;
+        margin-bottom: 8px;
+    }
+    #hero-quote-block > div > div:first-child > div:first-child {
+        font-size: 11px;
+    }
+    #hero-quote-block > div > div:first-child > div:nth-child(2),
+            #hero-quote-block > div > div:first-child > div:nth-child(3) {
+        font-size: 28px;
+    }
+    #hero-quote-block > div > div:last-child {
+        width: 90px;
+        height: 65px;
+        margin-left: 12px;
+    }
+    #left-page-base > div:last-child > div:first-child {
+        margin-top: -18px;
+    }
+    #origin-headline {
+        top: calc(4% + 9px);
+        left: 0%;
+    }
+    #intro-sticky-note {
+        transform: rotate(-2deg) scale(0.82) !important;
+        transform-origin: top right !important;
+        top: calc(11% + 0px);
+    }
+    #intro-sticky-note p {
+        font-size: 7px;
+    }
+    #intro-sticky-note span {
+        font-size: 7px;
+    }
+    #frag-origin-cursive {
+        top: 0%;
+        left: 0%;
+    }
+    #origin-micro-story {
+        font-size: 12px !important;
+        width: 70%;
+        top: calc(55% - 45px);
+        left: 0%;
+    }
+    #personal-cutout {
+        bottom: calc(-2% - 40px);
+        width: 36%;
+        height: 46%;
+        left: calc(5% + 15px);
+    }
+    #art-terminal {
+        top: calc(12% - 33px);
+        transform: rotate(-2deg) scale(0.9);
+        transform-origin: top left;
+        zoom: 0.95;
+    }
+    .realistic-paper-stack-right > div.relative > div:first-child {
+        margin-top: -18px;
+    }
+    #art-stats {
+        top: calc(5% - 14px) !important;
+        right: calc(8% - 7px) !important;
+        transform: rotate(6deg) scale(0.79) !important;
+        transform-origin: top right !important;
+    }
+    #art-stats > div.absolute.top-full {
+        font-size: 6px;
+        margin-top: 1px;
+        left: -9px;
+    }
+    #experience-typewriter {
+        font-size: 9px;
+        max-width: 220px;
+        padding-right: 2px;
+        top: calc(44% - 15px);
+    }
+    #experience-typewriter > p:first-of-type {
+        font-size: 10px;
+    }
+    #experience-typewriter > div:last-child {
+        font-size: 10px;
+        right: -15%;
+    }
+    .evidence-stamp-red {
+        height: 85px;
+        padding: 6px;
+    }
+    .evidence-stamp-yellow {
+        height: 85px;
+        padding: 6px;
+    }
+    .evidence-stamp-blue {
+        height: 85px;
+        padding: 6px;
+    }
+    .evidence-stamp-red > span:last-child {
+        font-size: 6px;
+    }
+    .evidence-stamp-yellow > span:last-child {
+        font-size: 6px;
+    }
+    .evidence-stamp-blue > span:last-child {
+        font-size: 6px;
+    }
+    #metrics-stamps-group {
+        gap: 6px;
+    }
+    #metrics-stamps-group .evidence-stamp-red {
+        height: 95px !important;
+        padding: 6px !important;
+    }
+    #metrics-stamps-group .evidence-stamp-yellow {
+        height: 95px !important;
+        padding: 6px !important;
+    }
+    #metrics-stamps-group .evidence-stamp-blue {
+        height: 95px !important;
+        padding: 6px !important;
+    }
+    #metrics-stamps-group .evidence-stamp-red > span:last-child {
+        font-size: 9px !important;
+    }
+    #metrics-stamps-group .evidence-stamp-yellow > span:last-child {
+        font-size: 9px !important;
+    }
+    #metrics-stamps-group .evidence-stamp-blue > span:last-child {
+        font-size: 9px !important;
+    }
+    #other-highlights-block {
+        bottom: calc(-4% + 7px);
+        font-size: 9px !important;
+    }
+    #torn-signature-paper {
+        bottom: calc(-8% - 20px);
+        zoom: 0.68;
+    }
+    #left-page-base > div:last-child {
+        padding-bottom: 20px;
+    }
+    #left-page-base > div:last-child > div:last-child {
+        font-size: 7px !important;
+    }
+    #personal-cutout > div:last-child {
+        bottom: calc(10% + 10px);
+    }
+    #frag-strategy-annot {
+        font-size: 11px !important;
+        top: calc(83% + 28px);
+        left: calc(73% - 8px);
+    }
+    #frag-strategy-annot span {
+        font-size: 13px !important;
+    }
+    #art-polaroid {
+        zoom: 0.88;
+        right: calc(2% - 5px);
+        bottom: calc(25% - 15px);
+    }
+}
+
+        /* ── Tier 2.5-S (stack): Short laptop viewports — 1280px–1440px × ≤800px tall ──
+           At 1366×768 the section forces min-h-[800px] with only ~720px usable height.
+           The stack area alone is 445px + 80px header-row gap + ~255px header = ~780px total.
+           Frost & Sullivan (card 4, top=285) is clipped at the bottom.
+           Fix: compress the header-row bottom margin and reduce h2 excess bottom padding.
+           Each element in its own rule as required. */
+        
+
+        /* ── Tier 2.5-S (section layout): Switch #experience from justify-center → flex-start
+           at 1280–1440×≤800 so Section 03 badge never clips at the top.
+           justify-center was splitting overflow top+bottom; flex-start pins content
+           to the top with explicit breathing room instead. */
+        
+
+        /* ── Tier 2.5-S (heading): Reduce Projects h2 from 11vw → 10vw so the
+           header row is ~27px shorter and Frost & Sullivan clears the viewport bottom. */
+        
+
+        /* ── Tier 2.5-S (sticker): Compact the Quick Note box so it doesn't
+           visually crowd the first project card in the tighter layout. */
+        
+
+        /* ── Tier 2.5-S (header row direction): Force the top header row into
+           flex-row so the sticker renders on the right side, not stacked below. */
+        
+
+        /* ── Tier 2.5-S (header row ID): ID-based flex-row rule — higher specificity
+           than Tailwind's flex-col class, ensures sticker always lands on the right. */
+        
+
+        /* ── Tier 2.5-S (sticker position): Pull sticker out of the flex flow
+           entirely and pin it absolutely to the top-right of the .max-w-[1400px]
+           wrapper (which already carries position:relative). This bypasses all
+           flex-direction specificity battles. */
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        /* Reduce inner divider bottom margin inside expanded card */
+        
+
+        /* Reduce gap between left and right columns inside expanded card */
+        
+
+        /* Reduce vertical gap between bullet point rows */
+        
+
+        /* Reduce right padding on bullet text — gives text more horizontal room so it wraps less */
+        
+
+        /* Reduce bottom margin on metric/stat items in right column */
+        
+
+        /* ── Tier 2.5-S (Best Work — heading): Reduce "best" and "Work" font-size
+           from 140px → 90px so the heading no longer reaches the billboard area. */
+        
+
+        
+
+        /* ── Tier 2.5-S (Best Work — tilted box): Match the box height to the
+           shorter 90px "best" line (90px × 0.85 leading + 16px top padding ≈ 93px). */
+        
+
+        /* ── Tier 2.5-S (Best Work — billboard position): Reduce station container
+           padding-bottom from 280px → 210px so the billboard sits lower in the
+           768px-tall section, clearing both the heading and the route board. */
+        
+
+        /* ── Tier 2.5-S (Best Work — billboard frame): Reduce frame height from
+           240px → 180px so the full billboard fits between the heading and the train. */
+        
+
+        /* ── Tier 2.5-S (Best Work — billboard gap): Bump station padding-bottom
+           from 210px → 220px so the billboard bottom clears the metro roof by ~10px. */
+        
+
+        /* ── Tier 2.5-S (Best Work — metro train height): Reduce train from
+           md:h-[210px] → 160px so the carriage is proportionally smaller at 768px. */
+        
+
+        /* ── Tier 2.5-S (Best Work — platform height): Raise the platform from
+           8vh (~61px at 768px) → 90px so the Easter-egg text row fits without
+           being clipped by the section's overflow-hidden. */
+        
+
+        /* ── Tier 2.5-S (Best Work — arrow next): Shrink the next arrow button
+           from md:w-24/h-24 (96px) → 64px so it is proportional at 768px. */
+        
+
+        /* ── Tier 2.5-S (Best Work — arrow prev): Shrink the prev arrow button
+           from md:w-24/h-24 (96px) → 64px to match the next button. */
+        
+
+        /* Platform container — reduce height to compress vertical spread at 1366×768 */
+        
+
+        /* Train — reduce height to match smaller platform container */
+        
+
+        /* Platform surface — reduce height proportionally */
+        
+
+        /* Billboard padding-bottom — pull closer to metro (5px gap: metro roof at 200px, billboard bottom at 205px) */
+        
+
+        /* Billboard frame — increase height to show full text metrics */
+        
+
+        /* Billboard frame — reduce vertical spread */
+        
+
+        /* Train — increase vertical spread */
+        
+
+        /* Platform surface — increase vertical spread */
+        
+
+        /* Billboard padding-bottom — maintain 3px gap above new metro roof (155+75=230px from bottom) */
+        
+
+        /* Platform surface — increase height to give space between yellow strip and footer text */
+        
+
+        /* Billboard padding-bottom — adjust for new metro roof at 155+95=250px */
+        
+
+        /* Billboard — move down to reduce gap with metro roof */
+        
+
+        /* Route box — move up 8px, right 15px, and reduce height */
+        
+
+        /* Route box — move down 35px and left 30px */
+        
+
+        /* ── 1280×800 fix (Best Work — heading size): Bump "Best" and "Work" from
+           the Tier-2.5-S 90px back up to 105px so the heading reads larger at this
+           specific resolution without touching any other breakpoint. */
+        
+
+        
+
+        /* ── 1280×800 fix (Best Work — route board position): Shift the board an
+           additional 20px down and 20px to the left relative to its cascaded position
+           at this exact screen size only. */
+        
+
+        /* Route box — reduce upper label (project name) font size */
+        
+
+        /* Route box — reduce lower label (station name) font size */
+        
+
+        /* Route box — reduce dot size */
+        
+
+        /* Platform — move yellow safety strip up (less grey above it) */
+        
+
+        /* Metro — shift entire train+platform assembly down (justify-end container; margin-top on child is ineffective) */
+        
+
+        /* Platform layout — move yellow strip down 10px */
+        
+
+        /* Platform — close gap between track lines and yellow strip; shift assembly further down */
+        
+
+        
+
+        /* Platform layout — move black track line 1 down 10px */
+        
+
+        /* Platform layout — move black track line 2 down 10px */
+        
+
+        /* Platform — pull track lines tight against platform top to reduce gap with metro */
+        
+
+        
+
+        /* Platform — move track lines down to close gap with yellow strip */
+        
+
+        
+
+        /* Metro — shift assembly down along with track lines */
+        
+
+        /* Platform — push thin line (child 2) down toward yellow strip; shift assembly down */
+        
+
+        
+
+        /* Platform — correct inverted order: swap values so thick stays above thin at 1366 */
+        
+
+        
+
+        /* Platform layout — move footer text down 10px */
+        
+
+        /* Platform — reduce height to close grey gap below yellow strip */
+        
+
+        /* Platform — pull footer text up to stay visible within reduced height */
+        
+
+        /* Compress: reduce platform height */
+        
+
+        /* Compress: tighten yellow strip toward track lines */
+        
+
+        /* Compress: tighten yellow safety line margin to pull footer up */
+        
+
+        /* Compress: tighten footer text */
+        
+
+        /* Compress: push entire assembly down to free billboard space */
+        
+
+        /* Compress: reduce billboard padding-bottom to use freed space */
+        
+
+        /* Billboard — increase frame height to show full text content */
+        
+
+        /* Billboard — increase padding-bottom to prevent metro overlap with taller frame */
+        
+
+        /* Step-out button — reduce size at 1366×768 */
+        
+
+        /* ── Tier 2.5-S (Contact — "contact" word): Scale down from lg:text-[16vw]
+           (~218px) → 11vw (~150px) so the heading occupies less vertical space. */
+        
+
+        /* ── Tier 2.5-S (Contact — "Me" word): Same size reduction as "contact";
+           also tighten the negative overlap margin proportionally (16vw→11vw). */
+        
+
+        /* ── Tier 2.5-S (Contact — tagline): Reduce "Ready to make a move..."
+           from md:text-2xl (24px) → 16px to match the smaller heading. */
+        
+
+        /* ── Tier 2.5-S (Contact — say hi link): Reduce from lg:text-5xl (48px)
+           → 34px and lock to a single line so "say hi before overthinking it"
+           never wraps at 1366×768. */
+        
+
+        /* ── Tier 2.5-S (ribbon height): Reduce top ribbon from 48px → 40px so it
+           occupies the same ~5% of viewport height as it does at 1710×968. */
+        
+
+        /* ── Tier 2.5-S (ribbon name): Compact left name block horizontal padding
+           and font size to fit the shorter ribbon gracefully. */
+        
+
+        /* ── Tier 2.5-S (nav bottom offset): Move the nav bar up slightly from
+           bottom-8 (32px) → 20px so its total footer footprint shrinks proportionally. */
+        
+
+        /* ── Tier 2.5-S (nav items): Tighten vertical padding and font size on each
+           nav link — md: classes set py-2.5 (10px) and text-[14px]; bring them
+           closer to the base (12px/6px) for the short viewport. */
+        
+
+        /* ── Tier 2.5-S (quick note title): Reduce "Worth a look." from md:text-2xl
+           (24px) to 17px so the sticker occupies less vertical space. */
+        
+
+        /* ── Tier 2.5-S (quick note body): Reduce body text from md:text-lg (18px)
+           to 13px to match the proportionally smaller sticker. */
+        
+
+        /* ── Tier 2.5-S (stack card padding): Reduce md:px-8 (32px) and md:py-6
+           (24px) to 18px/14px so each collapsed card is noticeably shorter. */
+        
+
+        /* ── Tier 2.5-S (stack card role text): Reduce the Schoolbell role heading
+           from md:text-6xl (60px) to 40px — the single largest height driver per card. */
+        
+
+        /* ── Tier 2.5-S (stack card role row gap): Tighten the mb-4 (16px) below
+           the role row to 8px so card body compresses further. */
+        
+
+        /* ── Tier 2.5-S (quick note position): At 1366×768 the md:flex-row header
+           puts the sticker beside the heading. Switch to flex-col so the sticker
+           stacks below the heading and above the cards (as the user expects). */
+        
+
+        /* ── Tier 2.5-S (quick note line-height): Tighten line spacing on the
+           "Worth a look." headline to reduce its vertical footprint. */
+        
+
+        /* ── Tier 2.5-S (quick note body line-height): Tighten line spacing on
+           the body copy from leading-relaxed (1.625) to reduce vertical spread. */
+        
+
+        /* ── Tier 2.5-S (quick note header row gap): Reduce pb-3 mb-3 (12px each)
+           on the "A QUICK NOTE" header row to tighten the divider gap. */
+        
+
+        /* ── Tier 2.5-S (Hero quote — small label): reduce "Creative by night," text */
+        
+
+        /* ── Tier 2.5-S (Hero quote — Schoolbell lines): reduce "more creative" + "by midnight." */
+        
+
+        /* ── Tier 2.5-S (Hero quote — graph): shrink graph container */
+        
+
+        /* ── Tier 2.5-S (Origin — page header labels): pull "01 -- ORIGIN" + "THE BEGINNING" up 4px */
+        
+
+        
+
+        /* ── Tier 2.5-S (Origin — headline gap): push headline down so cursive clears it */
+        
+
+        /* ── Tier 2.5-S (Origin — sticky note): scale down the "I'm an open book" note */
+        
+
+        /* ── Tier 2.5-S (Origin — sticky note override): tighter scale + 5px downward shift */
+        
+
+        /* ── Tier 2.5-S (Origin — sticky note paragraph): reduce main text size */
+        
+
+        /* ── Tier 2.5-S (Origin — sticky note span): reduce subtext size */
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        /* Intro sticky note — increase size */
+        
+
+        /* Reduce font size of origin paragraph */
+        
+
+        /* Widen the paragraph to fit more words per line (reduce right padding effect) */
+        
+
+        /* Push paragraph down to clear "SNEAKERS ON MY OWN" with at least 5px gap */
+        
+
+        
+
+        
+
+        /* Move personal cutout down 20px */
+        
+
+        /* Increase personal cutout size */
+        
+
+        /* Decrease cutout size + move down another 20px */
+        
+
+        
+
+        /* Reduce left indent of "how it all started" */
+        
+
+        /* Reduce left indent of headline "I STARTED MAKING...ON MY OWN" */
+        
+
+        /* Reduce left indent of paragraph "I had no idea...them work" */
+        
+
+        /* Philosophy note — move up 15px */
+        
+
+        /* Philosophy note — scale down to 90% */
+        
+
+        /* Philosophy note — scale 70%, move up additional 8px */
+        /* zoom avoids GSAP inline-transform conflict (entrance pop uses scale on this element) */
+        
+
+        /* Philosophy note — scale 80% */
+        
+
+        /* Philosophy note — scale 85% */
+        
+
+        /* Right page header — "02 -- one yes led to the next" / "things that happened" — move up to match left page */
+        
+
+        /* ── Tier 2.6: Standard desktop — 1024px–1920px ──
+           Explicitly cancel any inherited scale on the mockup/deck scenes
+           so they render at natural size on all non-ultra-wide screens. */
+        @media (min-width: 1024px) and (max-width: 1920px) {
+            .mockup-scene { transform: scale(1); }
+            .splayed-deck { transform: scale(1); }
+        }
+
+        /* ── Tier 3: Ultra-wide — 1921px+ ──
+           Hard-cap all main wrappers (prevent infinite horizontal stretch).
+           Scale root rem so every em/rem value in the design grows
+           proportionally on monitors wider than 1920px (OS at 100% scale). */
+        @media (min-width: 1921px) {
+            html { font-size: clamp(16px, 0.85vw, 20px); }
+
+            .mockup-scene   { transform: scale(1.28); }
+            .splayed-deck   { transform: scale(1.28); }
+            .nav-item       { font-size: 1rem; }
+
+            #proj-section-badge { font-size: 0.7vw; }
+
+            .brutal-wrap { max-width: 1800px; margin-inline: auto; }
+
+            #experience > div.max-w-\[1400px\] {
+                max-width: min(1600px, 85vw);
+            }
+        }
+
+        /* ── Tier 2.5-S (Origin — 186M+ tag): At 1366×768 the art-stats archival tag
+           is comparatively large and overlaps other elements. Move it up 4px, right 7px,
+           and scale it down to 70% to match the proportions seen at 1710×968. */
+        
+
+        /* ── Tier 2.5-S (Origin — "crazy what happens" annotation): The annotation
+           div sits outside the tag body but inside #art-stats. Compensate for the
+           70% parent scale so the note stays visually attached and legible. */
+        
+
+        /* ── Tier 2.5-S (Origin — 186M+ tag v2): Override to 55% — tag still too large
+           at 1366×768. Further reduce from 70% → 55% and maintain the up-4px/right-7px
+           positional correction from the previous rule. */
+        
+
+        /* ── Tier 2.5-S (Origin — "crazy what happens" annotation v2): Recompensate
+           for the smaller 55% parent scale — tighten font and offset further. */
+        
+
+        /* 186M+ tag — move up 10px */
+        
+
+        /* Philosophy note — move up 10px */
+        
+
+        /* Philosophy note — scale up to 95% */
+        
+
+        /* Experience block — reduce font size and narrow width to prevent overlap with DU RANK 1 stamp */
+        
+
+        /* Experience block — reduce explicit bold heading size */
+        
+
+        /* Experience block — less right padding + move up 15px */
+        
+
+        /* "Learned a lot here" — reduce size and pull closer to parent */
+        
+
+        /* Stamps — reduce height to shrink vertical spread */
+        
+
+        
+
+        
+
+        /* Stamps — reduce supporting phrase font size */
+        
+
+        
+
+        
+
+        /* Stamps group — tighten gap so stamps get more horizontal width */
+        
+
+        /* Stamps — reduce internal padding to give phrases more horizontal room */
+        
+
+        
+
+        
+
+        /* Stamps — height override with !important to beat Tailwind h-[115px], and ID-prefixed padding to beat p-3 */
+        
+
+        
+
+        
+
+        /* Stamps — force supporting phrase font-size with !important to beat Tailwind text-[9px], height to 95px */
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        /* Supporting phrases — increase to 7.5px */
+        
+
+        
+
+        
+
+        /* Supporting phrases — 9px */
+        
+
+        
+
+        
+
+        /* PS// note — move down to clear stamps */
+        
+
+        /* PS// note — reduce offset back to stay within visible area */
+        
+
+        /* PS// note — move up 10px, size 8px */
+        
+
+        /* PS// note — reduce font size to 7px */
+        
+
+        /* PS// note — up 2px more, size 9px */
+        
+
+        /* "Still figuring things out" — move down and scale via zoom (GSAP overrides transform scale on this element) */
+        
+
+        /* "Still figuring things out" — increase size */
+        
+
+        /* GOD'S PLAN footer — drop the left page content grid padding-bottom so footer sits lower */
+        
+
+        /* GOD'S PLAN footer — reduce font size */
+        
+
+        /* Personal cutout — move right 15px */
+        
+
+        /* "how it all started" cursive — move up */
+        
+
+        /* "I STARTED MAKING...ON MY OWN" headline — move up */
+        
+
+        /* "I STARTED MAKING...ON MY OWN" headline — move down 5px */
+        
+
+        /* "I STARTED MAKING...ON MY OWN" headline — move down another 4px */
+        
+
+        /* "bajkamal / early phase" sticker — move up 5px to clear GOD'S PLAN */
+        
+
+        /* "bajkamal / early phase" sticker — move up another 5px */
+        
+
+        /* "I had no idea...seeing them work" paragraph — move up */
+        
+
+        /* "It started...came later" — reduce font size */
+        
+
+        /* "Strategy came later." span — reduce size */
+        
+
+        /* "It started...came later" — increase size, move down 9px + left 3px */
+        
+
+        /* "Strategy came later." span — increase size */
+        
+
+        /* "It started...came later" — increase size, move down 12px + left 5px */
+        
+
+        /* "Strategy came later." span — increase size */
+        
+
+        /* Polaroid — scale down, move right 5px, move down 15px */
+        
+
+        /* ═══════════════════════════════════════════════════════════════════
+           1440 × 900 — Origin Section fixes
+           Scoped to exactly 1440px wide, 801–900px tall so it NEVER fires at
+           1280×800 (handled separately by the Tier-2.5-S blocks above).
+           Do NOT modify these blocks — add new ones if further tweaks needed.
+           ═══════════════════════════════════════════════════════════════════ */
+
+        /* Philosophy note (#art-terminal) — move up 15px and scale down */
+        @media (min-width: 1420px) and (max-width: 1452px) and (min-height: 780px) and (max-height: 920px) {
+    #art-terminal {
+        top: calc(12% - 15px);
+        zoom: 0.88;
+    }
+    #art-stats {
+        right: calc(8% - 20px);
+        transform: rotate(6deg) scale(0.80);
+        transform-origin: top right;
+    }
+    #art-stats > div.absolute.top-full {
+        font-size: 7px;
+        margin-top: 1px;
+        left: -10px;
+    }
+    #experience-typewriter {
+        top: calc(48% - 40px);
+        right: calc(8% - 30px);
+    }
+    #torn-signature-paper {
+        bottom: calc(-8% - 30px);
+        zoom: 0.80;
+    }
+    #vw-best {
+        font-size: 100px;
+    }
+    #vw-work {
+        font-size: 100px;
+    }
+    #vw-tilted-box {
+        height: 110px;
+    }
+    #top-ribbon {
+        height: 40px;
+    }
+    #main-nav .nav-item {
+        padding-top: 6px;
+        padding-bottom: 6px;
+        padding-left: 14px;
+        padding-right: 14px;
+        font-size: 12px;
+    }
+    #main-nav-container {
+        bottom: 20px;
+    }
+    #proj-section-badge + h2 {
+        font-size: 120px !important;
+    }
+    #proj-section-badge {
+        margin-bottom: 14px;
+    }
+    #proj-header-row {
+        margin-bottom: 10px;
+    }
+    #proj-helper-sticker {
+        padding: 12px;
+        width: 460px;
+        transform: translateY(-50px) translateX(-20px) rotate(-2deg);
+    }
+    #stack-area .stack-card {
+        padding-top: 14px;
+        padding-bottom: 14px;
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+    .card-expand.open {
+        max-height: 380px;
+        overflow-y: auto;
+    }
+    #proj-header-row > div:first-child {
+        margin-top: 40px;
+    }
+    #stack-area .stack-card > div:nth-child(4) > div:first-child {
+        font-size: 36px;
+    }
+    #proj-helper-sticker > span:first-of-type {
+        font-size: 17px;
+        line-height: 1.1;
+        margin-bottom: 4px;
+    }
+    #proj-helper-sticker > span:last-of-type {
+        font-size: 13px;
+        line-height: 1.25;
+    }
+    #stack-area {
+        margin-top: 30px;
+    }
+    #stack-area .stack-card .card-expand > div:last-child > div:first-child > div[class*="items-start"] {
+        margin-bottom: 4px;
+    }
+}
+
+        /* 186M+ archival tag (#art-stats) — move further right and scale down */
+        
+
+        /* "crazy what happens" annotation — compensate for parent scale */
+        
+
+        /* "Places I've hustled" block (#experience-typewriter) — move up and right
+           to prevent overlap with the stamp at 1440×900. */
+        
+
+        /* "Still figuring things out" note (#torn-signature-paper) — move down and
+           scale down at 1440×900 to prevent overlap with the PS// note below it. */
+        
+
+        /* ── 1440×900 fix (Best Works — "Best" heading): Reduce from xl:140px → 100px
+           so the heading no longer overlaps the billboard frame at this screen size. */
+        
+
+        /* ── 1440×900 fix (Best Works — "Work" heading): Same reduction as "Best". */
+        
+
+        /* ── 1440×900 fix (Best Works — blue tilted box): Trim height from the bottom
+           from md:150px → 110px so "Work" sits visibly outside/below the blue box. */
+        
+
+        /* ── 1440×900 fix (Ribbon — height): Reduce top ribbon from md:h-12 (48px)
+           → 40px to shrink the header footprint at this screen size. */
+        
+
+        /* ── 1440×900 fix (Nav items — padding & font): Tighten md:py-2.5/text-14px
+           → py-6px/text-12px so the nav bar occupies less vertical height. */
+        
+
+        /* ── 1440×900 fix (Nav container — bottom offset): Pull the floating nav bar
+           up from bottom-8 (32px) → 20px to reduce dead space at the bottom. */
+        
+
+        /* ═══════════════════════════════════════════════════════════════════
+           1440 × 900 — Projects Section fixes
+           Cards 4-5 clip off viewport bottom when dissected. Reduce vertical
+           footprint from top (heading → badge → sticker → cards → expand area).
+           ═══════════════════════════════════════════════════════════════════ */
+
+        /* (1) Section heading h2 — reduce from md:10vw (144px) → 100px */
+        
+
+        /* (2) Badge bottom margin + header row bottom margin — tighten spacing */
+        
+
+        /* (3) Quick note sticker — reduce width, padding and font sizes */
+        
+
+        /* (4) Stack cards — tighten vertical padding so each card is shorter */
+        
+
+        /* (5) Card expand (dissection) — reduce max-height so content never
+           pushes card fully off the bottom of the 900px viewport */
+        
+
+        /* (6) Header left column top spacer — the mt-[95px] wrapper above h2 burns
+           ~95px; pull it down to 40px so the whole block sits much higher. */
+        
+
+        /* (7) Expanded card role heading — the Schoolbell role text (e.g. "Project
+           Head") renders at md:text-6xl (60px) and is the biggest vertical driver
+           inside the open card. Reduce it to 36px at 1440×900. */
+        
+
+        /* (8) Card expand — make it scrollable so stats never get clipped and
+           cap the open height tighter than the 480px default above. */
+        
+
+        /* ── 1440×900 (Quick note — move up 15px): The sticker is bottom-aligned
+           inside the flex row; nudge it 15px upward with translateY. */
+        
+
+        /* ── 1440×900 (Quick note — increase width): Widen from 340px → 460px so
+           more words fit on each line and the box doesn't wrap so aggressively. */
+        
+
+        /* ── 1440×900 (Quick note — compress text): Tighten line-height on both
+           the "Worth a look." title and the body copy, and reduce font sizes
+           slightly so vertical spread shrinks while horizontal density increases. */
+        
+
+        /* ── 1440×900 (Quick note — move up 25px + left 10px): Overrides the earlier
+           translateY(-15px); combined transform is now Y:-25px X:-10px + tilt. */
+        
+
+        /* ── 1440×900 (Stack area — move down 15px): Adds top margin to the cards
+           container so the deck shifts down without affecting header layout. */
+        
+
+        /* ── 1440×900 (Quick note — +25px up +10px left, cumulative total Y:-50px X:-20px):
+           Overrides the previous translateY(-25px)/translateX(-10px) block. */
+        
+
+        /* ── 1440×900 (Stack area — +15px down, cumulative total margin-top: 30px):
+           Overrides the previous margin-top: 15px block. */
+        
+
+        /* ── 1440×900 (Dissected card bullet spacing): Reduce line spacing between
+           the pointers (bullet points) to decrease the overall height of the dissected card. */
+        
+
+        /* ── 1440×900 (Projects heading size): Increase the size of the 'Projects'
+           heading, overriding the previous 100px reduction. */
+        
+
+        /* ═══════════════════════════════════════════════════════════════════
+           1920 × 1080 — Projects Section & Global Navigation fixes
+           ═══════════════════════════════════════════════════════════════════ */
+
+        /* ── 1920×1080 (Projects Heading Position): Move up by 20px and left by 50px */
+        @media (min-width: 1880px) and (max-width: 1960px) and (min-height: 880px) and (max-height: 1100px) {
+    #proj-header-row > div:first-child {
+        transform: translate(-80px, -45px);
+    }
+    #proj-helper-sticker {
+        width: 600px;
+        padding: 24px;
+        transform: translate(50px, -70px) rotate(-2deg) !important;
+        padding-top: 36px !important;
+        padding-bottom: 36px !important;
+    }
+    #proj-helper-sticker > span:first-of-type {
+        font-size: 28px !important;
+        margin-bottom: 16px !important;
+    }
+    #proj-helper-sticker > span:last-of-type {
+        font-size: 22px !important;
+        line-height: 1.8 !important;
+    }
+    #stack-area .stack-card {
+        padding: 40px 48px;
+        padding-top: 24px;
+        padding-bottom: 24px;
+    }
+    #stack-area .stack-card > div:nth-child(4) > div:first-child {
+        font-size: 72px;
+    }
+    #main-nav .nav-item {
+        padding: 12px 24px;
+        font-size: 18px;
+    }
+    #main-nav-container {
+        bottom: 38px !important;
+    }
+    #top-ribbon {
+        height: 64px;
+    }
+    #top-ribbon > div:first-child {
+        font-size: 18px;
+        padding-left: 48px;
+        padding-right: 48px;
+    }
+    #hinglish-phrase {
+        font-size: 18px;
+    }
+    #scroll-progress-bar + div > span:first-child {
+        font-size: 16px;
+    }
+    #scroll-pct {
+        font-size: 18px;
+    }
+    #stack-area {
+        max-width: 1400px !important;
+        margin-top: -20px !important;
+    }
+    #stack-area .stack-card .card-expand .font-\['DM_Sans'\] {
+        font-size: 26px !important;
+        line-height: 1.8 !important;
+    }
+    #stack-area .stack-card .card-expand .font-\['Bebas_Neue'\] {
+        font-size: 72px !important;
+    }
+    #stack-area .stack-card .card-expand .font-\['Schoolbell'\] {
+        font-size: 14px !important;
+    }
+    #hero-badges {
+        transform: scale(1.35);
+        transform-origin: top left;
+    }
+    #hero-quote-block {
+        transform: scale(1.35);
+        transform-origin: top right;
+    }
+    #hero-roles-block {
+        transform: scale(1.35);
+        transform-origin: bottom left;
+    }
+    .hero-overlay-text.md\:bottom-20 {
+        bottom: 150px !important;
+        transform: translateX(-50%) scale(1.35) !important;
+        transform-origin: bottom center;
+    }
+    #preloader-content > div.font-\['Schoolbell'\] {
+        font-size: 150px !important;
+    }
+    #loader-container {
+        transform: scale(1.35);
+        transform-origin: bottom left;
+    }
+    #skip-btn {
+        transform: scale(1.35);
+        transform-origin: bottom right;
+    }
+    #metro-door-text h2 {
+        font-size: 180px !important;
+    }
+    #metro-door-text p {
+        font-size: 72px !important;
+        margin-top: 16px !important;
+        margin-bottom: 40px !important;
+    }
+    #metro-enter-btn {
+        font-size: 32px !important;
+        padding: 24px 72px !important;
+    }
+    #transit-stations-container > div > div:nth-child(2) {
+        transform-origin: bottom center !important;
+        transform: translateY(-62px) scale(1.25) !important;
+    }
+    #transit-train {
+        height: 170px !important;
+    }
+    #fixed-route-board {
+        margin-top: 20px !important;
+    }
+    div.absolute:has(> .group > #vw-tilted-box) {
+        margin-top: 20px !important;
+        translate: 0 15px !important;
+    }
+    #transit-next-btn, #transit-prev-btn {
+        width: 105px !important;
+        height: 105px !important;
+    }
+    #transit-next-btn svg, #transit-prev-btn svg {
+        width: 40px !important;
+        height: 40px !important;
+    }
+    #stack-area .stack-card .card-expand div[class*="items-start"] > div:last-child {
+        font-size: 19px !important;
+        line-height: 1.8 !important;
+    }
+    #stack-area .stack-card .card-expand div[class*="items-start"] > div:first-child {
+        width: 6px !important;
+        height: 6px !important;
+        margin-top: 12px !important;
+    }
+    #hero .hero-overlay-text.bottom-16,
+            #about-sticky-wrap > div.animate-pulse {
+        translate: 0 25px !important;
+    }
+    #transit-cs-content,
+            #transit-case-study-view > div.sticky {
+        max-width: 1600px !important;
+    }
+    #intro-sticky-note {
+        transform: scale(0.85) rotate(-2deg) !important;
+        transform-origin: top right !important;
+    }
+    #origin-headline {
+        font-size: 41px !important;
+        left: 2% !important;
+    }
+    #art-polaroid {
+        translate: 0 5px !important;
+    }
+    #experience-typewriter {
+        translate: 0 -20px !important;
+    }
+    #metrics-stamps-group {
+        translate: 0 -10px !important;
+    }
+    #other-highlights-block {
+        translate: 0 -10px !important;
+    }
+    #contact p.contact-stagger {
+        font-size: 34px !important;
+        line-height: 1.4 !important;
+        max-width: 800px !important;
+    }
+    #contact a[href^="mailto"] {
+        font-size: 80px !important;
+    }
+    #contact .contact-stagger span[aria-hidden="true"] {
+        font-size: 20px !important;
+    }
+    #contact .contact-stagger.flex.gap-8 a {
+        font-size: 24px !important;
+    }
+}
+
+        /* ── 1920×1080 (Quick note size and position): Increase size, move up 20px and right 30px */
+        
+
+        /* ── 1920×1080 (Cards size): Increase the padding and font sizes of the stack cards */
+        
+
+        /* ── 1920×1080 (Navbar size): Increase padding, font size, and bottom offset */
+        
+
+        /* ── 1920×1080 (Ribbon size): Increase height and font sizes inside the top ribbon */
+        
+
+        /* ── 1920×1080 (Overrides 2): Further adjustments based on feedback */
+        
+
+        /* ── 1920×1080 (Overrides 3): Increase text size in dissection */
+        
+
+        /* ── 1920×1080 (Overrides 4): Hero Section Labels */
+        
+
+        /* ── 1920×1080 (Overrides 5): Preloader Section */
+        
+
+        /* ── 1920×1080 (Overrides 6): Projects Section Adjustments */
+        
+
+        /* ── 1920×1080 (Overrides 7): Quick Note & Pointers Tweaks */
+        
+
+        /* ── 1920×1080 (Overrides 8): Navbar position */
+        
+
+        /* ── 1920×1080 (Overrides 9): Best Works Section */
+        
+
+        /* ── 1920×1080 (Overrides 10): Move stack area up */
+        
+
+        /* ── 1920×1080 (Overrides 11): Pointers Text Size (Replaced by Overrides 13) */
+
+        /* ── 1920×1080 (Overrides 12): Best Works Tweaks */
+        
+
+        /* ── 1920×1080 (Overrides 13): Pointers Text Size Correction */
+        
+
+        /* ── 1920×1080 (Overrides 14): Scroll Down Elements */
+        
+
+        /* ── 1920×1080 (Overrides 15): Move Best Works and Section 04 down */
+        
+
+        /* ── 1920×1080 (Overrides 16): Decrease navigation arrows slightly */
+        
+
+        /* ── 1920×1080 (Overrides 17): Widen the dissected case study container */
+        
+
+        /* ── 1920×1080 (Overrides 18): Decrease size of open book note */
+        
+
+        /* ── 1920×1080 (Overrides 19): Decrease text size and left padding of Origin headline */
+        
+
+        /* ── 1920×1080 (Overrides 20): Move polaroid down by 5px */
+        
+
+        /* ── 1920×1080 (Overrides 21): Move places i have hustled at upwards by 10px */
+        
+
+        /* ── 1920×1080 (Overrides 22): Move stamps upwards by 10px */
+        
+
+        /* ── 1920×1080 (Overrides 23): Move ps note upwards by 10px */
+        
+
+        /* ── 1920×1080 (Overrides 24): Increase size of left contact paragraph */
+        
+
+        /* ── 1920×1080 (Overrides 25): Increase size of Contact CTA area */
+        
+
+        /* ── 1536×864 (Overrides 26): Move places i have hustled at upwards */
+        @media (min-width: 1536px) and (max-width: 1560px) and (min-height: 740px) and (max-height: 870px) {
+    #experience-typewriter {
+        translate: 0 -25px !important;
+    }
+    #proj-helper-sticker {
+        transform: translateY(-32px) rotate(-2deg) !important;
+    }
+    #stack-area {
+        translate: 0 -15px !important;
+    }
+    #vw-best {
+        font-size: 110px !important;
+    }
+    #vw-work {
+        font-size: 110px !important;
+    }
+    #vw-tilted-box {
+        height: 120px !important;
+    }
+    #fixed-route-board {
+        margin-top: -22px !important;
+        transform: translateX(18px) rotate(-1.2deg) scale(0.90) !important;
+    }
+}
+
+        /* ── 1536×864 (Overrides 27): Move quick note upwards */
+        
+
+        /* ── 1536×864 (Overrides 28): Move cards stack upwards */
+        
+
+        /* ── 1536×864 (Overrides 29): Scale down Best heading */
+        
+
+        /* ── 1536×864 (Overrides 30): Scale down Work heading */
+        
+
+        /* ── 1536×864 (Overrides 31): Scale down Best Works tilted box */
+        
+
+        /* ── 1536×864 (Overrides 32): Move up and scale down route box */
+        
+
+        /* ── 1470×956 (Overrides 33): Move places i have hustled upwards */
+        @media (min-width: 1453px) and (max-width: 1535px) and (min-height: 781px) and (max-height: 960px) {
+    #experience-typewriter {
+        font-size: 11px;
+        line-height: 1.4;
+        margin-top: -45px;
+    }
+    #verified-stamp {
+        bottom: -30px;
+        right: 5%;
+    }
+    #other-highlights-block {
+        translate: 0 -20px;
+    }
+    #origin-micro-story {
+        translate: 0 -10px !important;
+    }
+    #torn-signature-paper {
+        zoom: 0.80;
+    }
+    .realistic-paper-stack-right {
+        overflow: visible;
+    }
+    #art-terminal {
+        zoom: 0.78;
+    }
+    #vw-best {
+        font-size: 105px !important;
+    }
+    #vw-work {
+        font-size: 105px !important;
+    }
+    #vw-tilted-box {
+        height: 115px !important;
+    }
+    div.absolute:has(> .group > #vw-tilted-box) {
+        margin-top: -20px !important;
+        translate: 0 35px;
+    }
+    #transit-stations-container > div {
+        padding-bottom: 245px !important;
+    }
+    #fixed-route-board {
+        margin-top: -15px !important;
+    }
+    #art-polaroid {
+        translate: 0 25px;
+    }
+    #proj-helper-sticker {
+        align-self: flex-start;
+        margin-top: 110px;
+        margin-right: 40px;
+    }
+    #stack-area {
+        margin-top: -35px;
+    }
+}
+
+        @media (min-width: 1453px) and (max-width: 1535px) and (min-height: 660px) and (max-height: 780px) {
+            /* Mac Default scaling with heavy browser chrome — real viewport ~1470×701 */
+            #origin-headline { font-size: 24px !important; line-height: 1.05 !important; }
+            #origin-micro-story { font-size: 10px !important; line-height: 1.4 !important; margin-top: 20px; }
+            #art-polaroid { zoom: 0.76; }
+            #personal-cutout { width: 28% !important; height: 36% !important; }
+            #art-terminal { zoom: 0.78; margin-top: -15px; }
+            #art-stats { zoom: 0.74; margin-top: -15px; }
+            #experience-typewriter { font-size: 10px !important; line-height: 1.4 !important; margin-top: -55px; }
+            #metrics-stamps-group .evidence-stamp-red,
+            #metrics-stamps-group .evidence-stamp-yellow,
+            #metrics-stamps-group .evidence-stamp-blue { height: 75px !important; padding: 4px !important; }
+            #proj-section-badge + h2 { font-size: clamp(80px, 9vw, 110px) !important; }
+            #proj-header-row > div:first-child { margin-top: 20px; }
+            #proj-helper-sticker { align-self: flex-start; margin-top: 40px; }
+            #stack-area { margin-top: -20px; }
+            #stack-area .stack-card { padding-top: 10px !important; padding-bottom: 10px !important; }
+            #vw-best { font-size: 90px !important; }
+            #vw-work { font-size: 90px !important; }
+            #vw-tilted-box { height: 100px !important; }
+            div.absolute:has(> .group > #vw-tilted-box) { translate: 0 -20px; }
+            #fixed-route-board { zoom: 0.76; }
+            #transit-stations-container > div { padding-bottom: 200px !important; }
+        }
+
+        @media (min-width: 1255px) and (max-width: 1380px) and (min-height: 660px) and (max-height: 760px) {
+            /* 1280×832 Mac More Space scaling — real viewport ~1280×714 */
+    #art-terminal {
+        zoom: 0.75;
+    }
+    #art-stats {
+        zoom: 0.75;
+    }
+    #experience-typewriter {
+        margin-top: -40px;
+    }
+    #vw-best {
+        font-size: 95px !important;
+    }
+    #vw-work {
+        font-size: 95px !important;
+    }
+    #vw-tilted-box {
+        height: 105px !important;
+    }
+    div:has(> #transit-next-btn) {
+        top: 42% !important;
+    }
+    div:has(> #transit-prev-btn) {
+        top: 42% !important;
+    }
+    #fixed-route-board {
+        zoom: 0.78;
+    }
+        }
+
+        @media (min-width: 1320px) and (max-width: 1380px) and (min-height: 580px) and (max-height: 665px) {
+            /* 1366×768 Windows laptop — real viewport ~1349×663 */
+            #frag-origin-cursive { margin-top: -30px; }
+            #origin-headline { margin-top: -20px; }
+            #origin-micro-story { font-size: 10px !important; line-height: 1.5 !important; }
+            #art-polaroid { zoom: 0.72; }
+            #art-terminal { zoom: 0.72; }
+            #art-stats { zoom: 0.68; }
+            #metrics-stamps-group .evidence-stamp-red,
+            #metrics-stamps-group .evidence-stamp-yellow,
+            #metrics-stamps-group .evidence-stamp-blue {
+                height: 80px !important;
+                padding: 5px !important;
+            }
+            #art-stats { margin-top: -30px; margin-left: 20px; }
+            #art-terminal { margin-top: -25px; }
+            #experience-typewriter { margin-top: -50px; }
+            #metrics-stamps-group { translate: 0 -20px; }
+            #art-polaroid { margin-bottom: -25px; }
+            #origin-micro-story { margin-top: 25px; }
+            #proj-section-badge { font-size: 8px; padding: 2px 8px; margin-top: 12px; }
+            #proj-section-badge + h2 { font-size: clamp(70px, 8vw, 100px) !important; margin-top: 8px; }
+            #proj-helper-sticker { margin-top: -30px; align-self: flex-start; }
+            #stack-area { margin-top: 25px; }
+            #stack-area .stack-card { padding-top: 10px !important; padding-bottom: 10px !important; }
+            #stack-area .stack-card .text-\[28px\] { font-size: 20px !important; }
+            #stack-area .stack-card .text-xs { font-size: 9px !important; }
+        }
+
+        @media (min-width: 1500px) and (max-width: 1560px) and (min-height: 660px) and (max-height: 760px) {
+            /* 1920×1080 Windows at 125% scaling — real viewport ~1519×710 */
+            #intro-sticky-note { zoom: 0.78; }
+            #frag-origin-cursive { font-size: 22px !important; }
+            #origin-micro-story { font-size: 10px !important; line-height: 1.5 !important; }
+            #personal-cutout { zoom: 0.82; }
+            #art-polaroid { zoom: 0.80; }
+            #origin-headline { font-size: 26px !important; line-height: 1.05 !important; }
+            #experience-typewriter { margin-top: 10px; margin-left: -20px; font-size: 10px !important; line-height: 1.4 !important; }
+            #metrics-stamps-group .evidence-stamp-red,
+            #metrics-stamps-group .evidence-stamp-yellow,
+            #metrics-stamps-group .evidence-stamp-blue {
+                height: 82px !important;
+                padding: 5px !important;
+            }
+            #frag-origin-cursive { font-size: 16px !important; }
+            #metrics-stamps-group .evidence-stamp-red > span:last-child,
+            #metrics-stamps-group .evidence-stamp-yellow > span:last-child,
+            #metrics-stamps-group .evidence-stamp-blue > span:last-child {
+                font-size: 7px !important;
+                line-height: 1.2 !important;
+            }
+            #proj-header-row > div:first-child { margin-top: 15px; }
+            #proj-helper-sticker { align-self: flex-start; margin-top: 30px; }
+            #stack-area { margin-top: -35px; }
+            #vw-best { font-size: 70px !important; }
+            #vw-work { font-size: 70px !important; }
+            #vw-tilted-box { height: 80px !important; }
+            div.absolute:has(> .group > #vw-tilted-box) { translate: 0 -25px; }
+            #fixed-route-board { zoom: 0.80; }
+            #transit-train { height: 90px !important; }
+            #transit-stations-container > div { padding-bottom: 240px !important; }
+        }
+
+        @media (min-width: 1880px) and (max-width: 1960px) and (min-height: 900px) and (max-height: 980px) {
+            /* 1920×1080 desktop monitor — real viewport ~1903×940 */
+            #transit-train { height: 170px !important; }
+            #transit-stations-container { zoom: 0.95; }
+        }
+
+        @media (min-width: 1561px) and (max-width: 1660px) and (min-height: 740px) and (max-height: 840px) {
+            /* 1600×900 laptop — real viewport ~1583×790 */
+            #personal-cutout { width: 28% !important; height: 38% !important; }
+            #origin-micro-story { font-size: 12px !important; line-height: 1.6 !important; margin-top: 25px; }
+            #art-terminal { zoom: 0.82; }
+            #art-stats { zoom: 0.80; }
+            #experience-typewriter { margin-top: -65px; }
+            #art-polaroid { zoom: 0.82; }
+            #vw-best { font-size: 105px !important; }
+            #vw-work { font-size: 105px !important; }
+            #vw-tilted-box { height: 115px !important; }
+            #fixed-route-board { zoom: 0.82; }
+            #transit-stations-container > div { padding-bottom: 200px !important; }
+            #transit-train { height: 150px !important; }
+        }
+
+        @media (min-width: 2500px) and (max-width: 2600px) and (min-height: 1280px) and (max-height: 1560px) {
+            /* 2560×1440 external monitor — real viewport ~2543×1330 */
+            #top-ribbon { height: 52px !important; font-size: 16px !important; }
+            .nav-brutal { padding: 10px !important; }
+            .nav-item { font-size: 16px !important; padding: 10px 20px !important; }
+            #hero-roles-block span[aria-hidden="true"] { font-size: 16px !important; }
+            #hero-roles-block span:not([aria-hidden]) { font-size: 32px !important; }
+            #origin-headline { font-size: 32px !important; line-height: 1.05 !important; }
+            #intro-sticky-note { zoom: 0.82; }
+            #art-polaroid { zoom: 0.82; }
+            #personal-cutout { width: 28% !important; height: 38% !important; }
+            #origin-micro-story { margin-top: 20px; }
+            #experience-typewriter { margin-top: -20px; }
+            #proj-section-badge + h2 { font-size: 220px !important; }
+            #proj-helper-sticker { zoom: 1.4; }
+            #stack-area .stack-card { padding-top: 36px !important; padding-bottom: 36px !important; }
+            #stack-area .stack-card .text-xl, #stack-area .stack-card .md\:text-2xl { font-size: 28px !important; }
+            #stack-area .stack-card .text-5xl, #stack-area .stack-card .md\:text-6xl { font-size: 72px !important; }
+            #stack-area .stack-card .text-\[11px\], #stack-area .stack-card .md\:text-\[12px\] { font-size: 16px !important; }
+            #stack-area .stack-card .text-\[11px\], #stack-area .stack-card .md\:text-\[13px\] { font-size: 16px !important; }
+            #vw-best { font-size: 180px !important; }
+            #vw-work { font-size: 180px !important; }
+            #vw-tilted-box { height: 195px !important; }
+            #fixed-route-board { zoom: 1.3; margin-top: -10px; }
+            #transit-stations-container { zoom: 1.5; }
+            #transit-stations-container > div { padding-bottom: 420px !important; }
+            #vending { min-height: 100vh !important; }
+            #transit-train { height: 350px !important; }
+            div.absolute:has(> .group > #vw-tilted-box) { translate: 0 -40px; }
+            #proj-content-wrap { max-width: 2200px !important; padding-left: 48px !important; padding-right: 48px !important; align-items: center !important; }
+            #stack-area { max-width: 100% !important; align-self: center !important; }
+        }
+
+        /* ── 1470×956 (Overrides 34): Move stamps upwards */
+        
+
+        /* ── 1470×956 (Overrides 35): Move ps note upwards */
+        
+
+        /* ── 1470×956 (Overrides 36): Move origin micro story upwards */
+        
+
+        /* ── 844×390 (Overrides 37): Mobile Landscape Enhancements */
+        @media (min-width: 844px) and (max-width: 844px) and (min-height: 390px) and (max-height: 390px) {
+    #hero h1 {
+        font-size: 225px !important;
+    }
+    #hero-job-title {
+        font-size: 10px !important;
+        bottom: 10px !important;
+    }
+    #about-sticky h2 {
+        font-size: 50px !important;
+        padding-top: 10px !important;
+    }
+    #torn-signature-paper {
+        zoom: 0.5 !important;
+        bottom: -20px !important;
+    }
+    #vw-best, #vw-work {
+        font-size: 70px !important;
+    }
+    #vw-tilted-box {
+        height: 80px !important;
+    }
+    #fixed-route-board {
+        height: 90px !important;
+        transform: scale(0.65) !important;
+        margin-top: -10px !important;
+        right: 20px !important;
+    }
+    #origin-headline {
+        font-size: 50px !important;
+    }
+    #art-polaroid {
+        transform: translateX(30px) translateY(-30px) rotate(4deg) !important;
+        bottom: 5% !important;
+        max-width: 90px !important;
+    }
+    #experience-typewriter {
+        font-size: 20px !important;
+        translate: 0 -10px !important;
+    }
+    #hero-roles-block {
+        zoom: 0.55 !important;
+        bottom: 5% !important;
+    }
+    #hero-quote-block {
+        zoom: 0.55 !important;
+        top: 15% !important;
+    }
+    #top-ribbon {
+        zoom: 0.6 !important;
+    }
+    #main-nav-container {
+        bottom: 12px !important;
+    }
+    #main-nav {
+        zoom: 0.65 !important;
+    }
+    #hero .hero-overlay-text.bottom-16 {
+        zoom: 0.6 !important;
+        bottom: 39px !important;
+    }
+    #sound-toggle {
+        zoom: 0.65 !important;
+    }
+    #hero-badges {
+        top: 75px !important;
+        left: 69px !important;
+        bottom: auto !important;
+        right: auto !important;
+        zoom: 0.75 !important;
+    }
+    #intro-sticky-note {
+        transform: scale(0.5) rotate(-2deg) !important;
+        transform-origin: top right !important;
+    }
+    #origin-page-header {
+        font-size: 6px !important;
+        transform: translateY(-20px) !important;
+        margin-top: -11px !important;
+    }
+    #frag-origin-cursive,
+            #origin-headline {
+        zoom: 0.3 !important;
+        margin-top: -120px !important;
+        margin-left: -60px !important;
+    }
+    #origin-micro-story {
+        zoom: 0.6 !important;
+        margin-top: -17px !important;
+        margin-left: -35px !important;
+    }
+    #left-page-base > div:last-child > div:last-child {
+        font-size: 9px !important;
+        transform: translateY(15px) !important;
+    }
+    #personal-cutout > div:last-child {
+        zoom: 0.7 !important;
+    }
+    #frag-strategy-annot, #frag-strategy-annot span {
+        font-size: 7px !important;
+        line-height: 1.2 !important;
+    }
+    #personal-cutout {
+        transform: translateY(20px) !important;
+    }
+    #sticker-baaz {
+        transform: translate(-50%, 0) rotate(4deg) scale(0.6) !important;
+    }
+    #art-terminal {
+        transform: translate(-60px, -80px) rotate(-2deg) scale(0.45) !important;
+    }
+    #art-stats {
+        transform: rotate(6deg) scale(0.4) !important;
+    }
+    #origin-page-header-2 {
+        transform: scale(0.75) !important;
+        transform-origin: top center !important;
+        width: 133% !important;
+    }
+}
+
+        /* ── 844×390 (Overrides 38): Reduce size of Hero Roles labels drastically */
+        
+
+        /* ── 844×390 (Overrides 39): Reduce top ribbon size */
+        
+
+        /* ── 844×390 (Overrides 40): Reduce navbar size */
+        
+
+        /* ── 844×390 (Overrides 41): Reduce Hero Scroll Indicator */
+        
+
+        /* ── 844×390 (Overrides 42): Reduce Volume Button */
+        
+
+        /* ── 844×390 (Overrides 43): Increase Baaz text size */
+        
+
+        /* ── 844×390 (Overrides 44): Increase Hero Roles Labels slightly */
+        
+
+        /* ── 844×390 (Overrides 45): Increase Hero Quote Label slightly */
+        
+
+        /* ── 844×390 (Overrides 46): Increase Baaz text size to 140px */
+        
+
+        /* ── 844×390 (Overrides 47): Move Hero Scroll Indicator up slightly */
+        
+
+        /* ── 844×390 (Overrides 48): Move Hero Scroll Indicator up another 2px */
+        
+
+        /* ── 844×390 (Overrides 49): Increase Baaz text size to 150px */
+        
+
+        /* ── 844×390 (Overrides 50): Move srcc'27 label up and left (consolidated) */
+        
+
+        /* ── 844×390 (Overrides 52): Increase Baaz text size to 160px */
+        
+
+        /* ── 844×390 (Overrides 53): Increase Baaz text size to 250px */
+        
+
+        /* ── 844×390 (Overrides 54): Increase Baaz text size to 225px */
+        
+
+        /* ── 844×390 (Overrides 55): Reduce srcc'27 label size */
+        
+
+        /* ── 844×390 (Overrides 56): Reduce 'open book' note to 50% */
+        
+
+        /* ── 844×390 (Overrides 57): Reduce origin page header size and move up */
+        
+
+        /* ── 844×390 (Overrides 58): Reduce 'how it all started' to 'on my own' size, move up, reduce left padding */
+        
+
+        /* ── 844×390 (Overrides 59): Reduce 'I had no idea...' micro story size, left padding, and move up */
+        
+
+        /* ── 844×390 (Overrides 60): Move Origin page header up */
+        
+
+        /* ── 844×390 (Overrides 61): GOD'S PLAN footer size and position */
+        
+
+        /* ── 844×390 (Overrides 62): Reduce bajkamal sticker size */
+        
+
+        /* ── 844×390 (Overrides 63): Move polaroid right 30px and up 30px */
+        
+
+        /* ── 844×390 (Overrides 64): Reduce 'It started as...' text size */
+        
+
+        /* ── 844×390 (Overrides 65): Move cutout up by 15px */
+        
+
+        /* ── 844×390 (Overrides 66): Reduce polaroid size further */
+        
+
+        /* ── 844×390 (Overrides 67): Reduce Baaz sticker size */
+        
+
+        /* ── 844×390 (Overrides 68): Reduce philosophy note size and move up/left */
+        
+
+        /* ── 844×390 (Overrides 69): Reduce 186M note size further */
+        
+
+        /* ── 844×390 (Overrides 70): Scale down 02 page header to match 01 */
+        
+
+        /* ── 1470×832 (Best Works — "Best" heading): Scale down from xl:140px → 115px */
+        @media (min-width: 1441px) and (max-width: 1535px) and (min-height: 701px) and (max-height: 780px) {
+    #vw-best {
+        font-size: 110px !important;
+    }
+    #vw-work {
+        font-size: 110px !important;
+    }
+    #fixed-route-board {
+        top: 58px !important;
+        right: 55px !important;
+        transform: rotate(-1.2deg) !important;
+    }
+    #transit-train {
+        height: 175px !important;
+    }
+    #transit-stations-container > div {
+        margin-top: 45px !important;
+    }
+    #vw-tilted-box {
+        height: 95px !important;
+    }
+    #art-polaroid {
+        bottom: calc(25% - 20px) !important;
+    }
+    #experience-typewriter {
+        font-size: 10px !important;
+        padding-right: 6px !important;
+        top: calc(48% - 60px) !important;
+    }
+    #art-stats {
+        transform: rotate(6deg) scale(0.78) !important;
+        transform-origin: top right !important;
+    }
+    #art-terminal {
+        zoom: 0.78;
+    }
+    #metrics-stamps-group {
+        translate: 0 -35px !important;
+    }
+    #other-highlights-block {
+        translate: 0 -20px !important;
+    }
+}
+
+        /* ── 1470×832 (Best Works — "Work" heading): Scale down from xl:140px → 115px */
+        
+
+        /* ── 1470×832 (Best Works — route box): Scale down, move up 10px and right 10px */
+        
+
+        /* ── 1470×832 (Best Works — metro height): Reduce vertical spread from md:210px → 175px */
+        
+
+        /* ── 1470×832 v2 (Best Works — "Best" heading): Tiny reduction 140px → 130px */
+        
+
+        /* ── 1470×832 v2 (Best Works — "Work" heading): Tiny reduction 140px → 130px */
+        
+
+        /* ── 1470×832 v2 (Best Works — route box): Move up 20px, right 30px from base */
+        
+
+        /* ── 1470×832 v2 (Best Works — metro height): Reduce vertical spread → 175px */
+        
+
+        /* ── 1470×832 v3 (Best Works — "Best" heading): Tiny bit more → 120px */
+        
+
+        /* ── 1470×832 v3 (Best Works — "Work" heading): Tiny bit more → 120px */
+        
+
+        /* ── 1470×832 v4 (Best Works — billboard): Move down 5px */
+        
+
+        /* ── 1470×832 v5 (Best Works — billboard): Move down 9px total */
+        
+
+        /* ── 1470×832 v6 (Best Works — billboard): Move down by 12px → 21px */
+        
+
+        /* ── 1470×832 v4 (Best Works — blue tilted box): Trim height so "Work" sits outside */
+        
+
+        /* ── 1470×832 v4 (Best Works — "Best" heading): Tiny bit more → 110px */
+        
+
+        /* ── 1470×832 v4 (Best Works — "Work" heading): Tiny bit more → 110px */
+        
+
+        /* ── 1470×832 v3 (Best Works — route box): Another 20px up, 30px right from v2 */
+        
+
+        /* ── 1470×832 (Origins — polaroid): Move down 10px */
+        
+
+        /* ── 1470×832 (Origins — hustled-at block): Smaller font, less right padding */
+        
+
+        /* ── 1470×832 v7 (Best Works — billboard): Move down 12px → 33px total */
+        
+
+        /* ── 1470×832 v8 (Best Works — billboard): Move down another 12px → 45px total */
+        
+
+        /* ── 1470×832 (Origins — 186M tag): Scale down */
+        
+
+        /* ── 1470×832 (Origins — hustled-at block): Move up 10px */
+        
+
+        /* ── 1470×832 v2 (Origins — polaroid): Move down another 10px → calc(25% - 20px) */
+        
+
+        /* ── 1470×832 (Origins — philosophy note): Scale down */
+        
+
+        /* ── 1470×832 v2 (Origins — hustled-at block): Move up another 20px → calc(48% - 30px) */
+        
+
+        /* ── 1470×832 v3 (Origins — hustled-at block): Move up another 30px → calc(48% - 60px) */
+        
+
+        /* ── 1470×832 (Origins — stamps): Move up 20px */
+        
+
+        /* ── 1470×832 (Origins — ps note): Move up 20px */
+        
+
+        /* ── 1470×832 v2 (Origins — stamps): Move up another 15px → -35px total */
+        
+        /* ── 1024×768 (Overrides 1): Reduce 'open book' note size */
+        @media (min-width: 1000px) and (max-width: 1100px) and (min-height: 680px) and (max-height: 800px) {
+    #intro-sticky-note {
+        zoom: 0.8 !important;
+    }
+    #frag-origin-cursive,
+            #origin-headline {
+        margin-left: -25px !important;
+        margin-top: -10px !important;
+    }
+    #origin-page-header {
+        transform: translateY(-10px) !important;
+    }
+    #origin-micro-story {
+        margin-top: -15px !important;
+        margin-left: -25px !important;
+    }
+    #frag-strategy-annot {
+        font-size: 9px !important;
+    }
+    #art-polaroid {
+        zoom: 0.8 !important;
+    }
+    #art-terminal {
+        zoom: 0.8 !important;
+    }
+    #art-stats {
+        zoom: 0.7 !important;
+        margin-left: 65px !important;
+        margin-top: -25px !important;
+    }
+    #origin-page-header-2 {
+        transform: translateY(-7px) !important;
+    }
+    #experience-typewriter {
+        zoom: 0.8 !important;
+    }
+}
+
+        /* ── 1024×768 (Overrides 2): Reduce left padding of 'how it all started' and headline */
+        
+
+        /* ── 1024×768 (Overrides 3): Move origin page header up */
+        
+
+        /* ── 1024×768 (Overrides 4): Adjust micro-story (move up and align left) */
+        
+
+        /* ── 1024×768 (Overrides 5): Reduce font size of strategy note */
+        
+
+        /* ── 1024×768 (Overrides 6): Reduce size of polaroid */
+        
+
+        /* ── 1024×768 (Overrides 7): Reduce size of philosophy note */
+        
+
+        /* ── 1024×768 (Overrides 8): Reduce size of 186m note and move right/up */
+        
+
+        /* ── 1024×768 (Overrides 9): Move right page header up */
+        
+
+        /* ── 1024×768 (Overrides 10): Reduce font size of places i have hustled at para */
+        
+    
+
+/* ==========================================================================
+   RETRO BLUEPRINT DESKTOP WORKSPACE (PROJECTS MULTI-WINDOW SYSTEM)
+   ========================================================================== */
+
+.retro-desktop-canvas {
+    background-color: #1a3fe3;
+    background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+        linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 40px 40px, 40px 40px, 10px 10px, 10px 10px;
+    box-shadow: 10px 10px 0px #101a3a, inset 0 0 100px rgba(10, 25, 90, 0.4);
+}
+
+.retro-window {
+    position: absolute;
+    background: #ffffff;
+    border: 3px solid #101a3a;
+    box-shadow: 6px 6px 0px #101a3a;
+    transition: box-shadow 0.15s ease;
+    user-select: none;
+    max-width: 100%;
+}
+
+.retro-window.is-focused {
+    box-shadow: 9px 9px 0px #101a3a;
+    border-color: #101a3a;
+}
+
+.retro-window.is-inactive {
+    box-shadow: 4px 4px 0px rgba(16, 26, 58, 0.6);
+    opacity: 0.94;
+}
+
+.retro-window.is-maximized {
+    position: absolute !important;
+    left: 8px !important;
+    top: 8px !important;
+    right: 8px !important;
+    bottom: 54px !important;
+    width: auto !important;
+    height: auto !important;
+    transform: none !important;
+    z-index: 85 !important;
+    box-shadow: 8px 8px 0px #101a3a !important;
+}
+
+.retro-window.hidden,
+.retro-window.is-minimized {
+    display: none !important;
+}
+
+.retro-titlebar {
+    background: #2448e8;
+    color: #ffffff;
+    border-bottom: 2.5px solid #101a3a;
+    cursor: grab;
+    touch-action: none;
+}
+
+.retro-window.is-inactive .retro-titlebar {
+    background: #101a3a;
+    color: #d5e0ff;
+}
+
+.retro-titlebar:active {
+    cursor: grabbing;
+}
+
+.retro-btn-ctrl {
+    width: 22px;
+    height: 22px;
+    border: 2px solid #101a3a;
+    background: #ffffff;
+    color: #101a3a;
+    font-family: monospace;
+    font-size: 11px;
+    font-weight: 900;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 1.5px 1.5px 0px #101a3a;
+    transition: all 0.1s ease;
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 10;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.retro-btn-ctrl:hover {
+    background: #ffffff;
+    border-color: var(--red);
+    color: var(--red-hot);
+    transform: translate(-1px, -1px);
+    box-shadow: 2.5px 2.5px 0px var(--red);
+}
+
+.retro-btn-ctrl:active {
+    transform: translate(1px, 1px);
+    box-shadow: 0px 0px 0px var(--red);
+}
+
+.retro-btn-close:hover {
+    background: var(--red-hot) !important;
+    border-color: var(--red-hot) !important;
+    color: #ffffff !important;
+    box-shadow: 2.5px 2.5px 0px #101a3a;
+}
+
+.retro-btn-close:active {
+    background: #d63031 !important;
+    color: #ffffff !important;
+}
+
+.retro-icon-shortcut {
+    border: 2px solid #101a3a;
+    background: #ffffff;
+    box-shadow: 3px 3px 0px #101a3a;
+    transition: all 0.15s ease;
+    cursor: pointer;
+}
+
+.retro-icon-shortcut:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0px var(--red);
+    border-color: var(--red);
+    background: #FFF5F5;
+}
+
+.retro-icon-shortcut:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px #101a3a;
+}
+
+.retro-icon-shortcut.is-active {
+    border-color: var(--red);
+    background: #FFF5F5;
+}
+
+.retro-taskbar-tab {
+    border: 2px solid #101a3a;
+    background: #f7f9ff;
+    color: #101a3a;
+    box-shadow: 2px 2px 0px #101a3a;
+    transition: all 0.15s ease;
+    cursor: pointer;
+}
+
+.retro-taskbar-tab:hover {
+    background: #ffffff;
+    border-color: var(--red);
+    color: var(--red-hot);
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0px var(--red);
+}
+
+.retro-taskbar-tab.is-active {
+    background: #2448e8;
+    color: #ffffff;
+    border-color: var(--red);
+    box-shadow: inset 2px 2px 0px rgba(0,0,0,0.4), 2px 2px 0px var(--red);
+    transform: translate(1px, 1px);
+}
+
+.retro-taskbar-tab.is-minimized {
+    background: #e2e8f0;
+    opacity: 0.75;
+    font-style: italic;
+}
+
+.retro-taskbar-tab.hidden {
+    display: none !important;
+}
+
+/* Custom scrollbars inside retro windows */
+.retro-window-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #2448e8 #edf2ff;
+}
+.retro-window-scroll::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+}
+.retro-window-scroll::-webkit-scrollbar-track {
+    background: #edf2ff;
+    border-left: 2px solid #101a3a;
+}
+.retro-window-scroll::-webkit-scrollbar-thumb {
+    background: #2448e8;
+    border: 2px solid #101a3a;
+}
+.retro-window-scroll::-webkit-scrollbar-thumb:hover {
+    background: var(--red);
+    border-color: var(--red-hot);
+}
+
+/* Ensure the retro desktop taskbar tabs are never obstructed by the floating navigation */
+#desktop-taskbar {
+    z-index: 60 !important;
+}
+#desktop-taskbar-tabs {
+    z-index: 61 !important;
+}
+body:has(#retro-desktop-canvas:hover) #main-nav-container {
+    opacity: 0.15;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+body:has(#retro-desktop-canvas:hover) #main-nav-container:hover {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+/* Mobile responsive constraints */
+@media (max-width: 767px) {
+    .retro-window {
+        position: absolute !important;
+        left: 8px !important;
+        top: 8px !important;
+        width: calc(100% - 16px) !important;
+        height: calc(100% - 60px) !important;
+    }
+}
+
+/* ==========================================================================
+   APPLE GENIE EFFECT (MACOS SQUEEZE & FUNNEL TRANSFORMS)
+   ========================================================================== */
+
+@keyframes appleGenieOpen {
+    0% {
+        opacity: 0;
+        clip-path: polygon(42% 100%, 58% 100%, 53% 96%, 47% 96%);
+        transform: perspective(850px) rotateX(24deg) scale(0.1) translateY(180px);
+        filter: blur(4px);
+    }
+    30% {
+        opacity: 0.8;
+        clip-path: polygon(24% 100%, 76% 100%, 88% 40%, 12% 40%);
+        transform: perspective(850px) rotateX(12deg) scale(0.55) translateY(60px);
+        filter: blur(1px);
+    }
+    65% {
+        opacity: 0.96;
+        clip-path: polygon(5% 98%, 95% 98%, 100% 10%, 0% 10%);
+        transform: perspective(850px) rotateX(4deg) scale(0.92) translateY(12px);
+        filter: blur(0px);
+    }
+    85% {
+        clip-path: polygon(1% 100%, 99% 100%, 100% 2%, 0% 2%);
+        transform: perspective(850px) rotateX(1deg) scale(1.02) translateY(-3px);
+    }
+    100% {
+        opacity: 1;
+        clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 0% 0%);
+        transform: perspective(850px) rotateX(0deg) scale(1) translateY(0);
+        filter: blur(0px);
+    }
+}
+
+@keyframes appleGenieMinimize {
+    0% {
+        opacity: 1;
+        clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 0% 0%);
+        transform: perspective(850px) rotateX(0deg) scale(1) translateY(0);
+        filter: blur(0px);
+    }
+    25% {
+        opacity: 0.95;
+        clip-path: polygon(5% 98%, 95% 98%, 100% 15%, 0% 15%);
+        transform: perspective(850px) rotateX(6deg) scale(0.9) translateY(15px);
+    }
+    60% {
+        opacity: 0.75;
+        clip-path: polygon(25% 100%, 75% 100%, 85% 55%, 15% 55%);
+        transform: perspective(850px) rotateX(16deg) scale(0.48) translateY(90px);
+        filter: blur(2px);
+    }
+    100% {
+        opacity: 0;
+        clip-path: polygon(44% 100%, 56% 100%, 52% 96%, 48% 96%);
+        transform: perspective(850px) rotateX(28deg) scale(0.08) translateY(220px);
+        filter: blur(6px);
+    }
+}
+
+.genie-in {
+    animation: appleGenieOpen 0.44s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    transform-origin: bottom center;
+    will-change: transform, clip-path, opacity;
+}
+
+.genie-out {
+    animation: appleGenieMinimize 0.38s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+    transform-origin: bottom center;
+    pointer-events: none !important;
+    will-change: transform, clip-path, opacity;
+}
+
+/* Category Filter Tabs */
+.retro-cat-pill {
+    border: 2px solid #101a3a;
+    background: #ffffff;
+    color: #101a3a;
+    font-family: monospace;
+    font-weight: 700;
+    box-shadow: 2px 2px 0px #101a3a;
+    transition: all 0.12s ease;
+    cursor: pointer;
+}
+
+.retro-cat-pill:hover {
+    background: #ffffff;
+    border-color: var(--red);
+    color: var(--red-hot);
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0px var(--red);
+}
+
+.retro-cat-pill.is-active {
+    background: #2448e8;
+    color: #ffffff;
+    border-color: var(--red);
+    box-shadow: inset 1px 1px 0px rgba(0,0,0,0.3), 2px 2px 0px var(--red);
+    transform: translate(1px, 1px);
+}
+
+/* ==========================================================================
+   BEST PROJECT: SEAMLESS 3D SWEEP RING SHOWCASE STYLES
+   ========================================================================== */
+#vending {
+    background-color: var(--beige) !important;
+    color: #0A0A0A !important;
+    position: relative;
+    z-index: 9001 !important;
+    min-height: 100vh;
+}
+
+#sweep-ring-container {
+    position: relative;
+    width: 100%;
+    min-height: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: var(--beige);
+}
+
+#sweep-ring-stage {
+    position: relative;
+    width: 100%;
+    max-width: 1120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--beige);
+}
+
+#sweep-ring-video {
+    width: 100%;
+    height: auto;
+    max-height: 64vh;
+    object-fit: contain;
+    display: block;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background-color: var(--beige);
+}
+
+.sweep-card {
+    position: absolute;
+    width: clamp(340px, 65vw, 820px);
+    aspect-ratio: 16 / 9.5;
+    border-radius: 18px;
+    background: #08090E;
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    will-change: transform, opacity;
+    user-select: none;
+    -webkit-user-select: none;
+    transform-origin: center center;
+    pointer-events: none;
+}
+
+.sweep-card-media {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+    background: #000;
+}
+
+.sweep-card-glass {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0) 45%, rgba(0, 0, 0, 0.3) 100%);
+    border-radius: 16px;
+}
+
+@media (max-width: 640px) {
+    #sweep-ring-container {
+        min-height: 400px;
+        height: 50vh;
+    }
+    .sweep-card {
+        width: 88vw;
+        border-radius: 14px;
+    }
+}
+
+/* ==========================================================================
+   TERTIARY ACCENTS: SOUND TOGGLE, MODAL & CONTACT HOVER POLISH
+   ========================================================================== */
+#sound-toggle {
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
+}
+#sound-toggle:hover {
+    border-color: var(--red) !important;
+    color: var(--red-hot) !important;
+    box-shadow: 4px 4px 0px var(--red) !important;
+}
+#sound-toggle:active {
+    box-shadow: 2px 2px 0px var(--red-hot) !important;
+}
+
+#close-modal-btn:hover {
+    border-color: var(--red) !important;
+    box-shadow: 6px 6px 0px var(--red) !important;
+}
+
+/* Contact Section Hero Accents */
+.contact-cta-link {
+    transition: color 0.25s ease, transform 0.25s ease, filter 0.25s ease;
+}
+.contact-cta-link:hover {
+    color: var(--red) !important;
+    filter: drop-shadow(0 0 16px var(--red-glow));
+}
+.contact-cta-underline {
+    background-color: var(--red) !important;
+    box-shadow: 0 0 10px var(--red-glow) !important;
+}
+.contact-social-link {
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+.contact-social-link:hover {
+    color: var(--red) !important;
+}
+.contact-social-link:hover .contact-social-line {
+    background-color: var(--red) !important;
+}
