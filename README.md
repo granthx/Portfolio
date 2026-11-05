@@ -2,7 +2,7 @@ GRANTH CHHABRA
 
 Just a blank page and the will to fill it...
 
-Live Domain: [granthchhabra.me](https://granthchhabra.me)
+Check It Out [granthchhabra.me](https://granthchhabra.me)
 
 <p align="center">
   <img src="public/assets/puppet-ascii.gif" width="780" alt="ASCII Puppet Screens — Oscillating 3D Threads" />
