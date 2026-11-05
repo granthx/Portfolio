@@ -1,6 +1,6 @@
-GRANTH CHHABRA
+#GRANTH CHHABRA
 
-Just a blank page and the will to fill it...
+#Just a blank page and the will to fill it...
 
 Check It Out [granthchhabra.me](https://granthchhabra.me)
 
@@ -8,4 +8,4 @@ Check It Out [granthchhabra.me](https://granthchhabra.me)
   <img src="public/assets/puppet-ascii.gif" width="780" alt="ASCII Puppet Screens — Oscillating 3D Threads" />
 </p>
 
-You think I am lucky, You think I woke up one day and found a blueprint...
+
