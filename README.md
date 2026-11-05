@@ -1,6 +1,6 @@
-#GRANTH CHHABRA
+# GRANTH CHHABRA
 
-#Just a blank page and the will to fill it...
+# Just a blank page and the will to fill it...
 
 Check It Out [granthchhabra.me](https://granthchhabra.me)
 
